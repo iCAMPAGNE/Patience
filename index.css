@@ -1,0 +1,34 @@
+div.piles-area {
+	display: -webkit-flex;
+    display: flex;
+}
+
+div.play-area {
+	margin-top: 3em;
+}
+
+div.card-area {
+	width: 8em;
+	height: 10em;
+	margin: 1em;
+	border-radius: 1em;
+	background-color: silver;
+}
+
+div.right-pile {
+	margin-left: auto;
+}
+
+div.card {
+	position: absolute;
+	width: 5.2em;
+	height: 8em;
+	border-radius: 1em;
+	border: black 0.5em solid;
+	padding: 0.5em 1em;
+	background-color: aqua;
+}
+
+div.card-area.invisible {
+	background-color: white;
+}
