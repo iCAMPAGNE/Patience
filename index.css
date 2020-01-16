@@ -4,12 +4,12 @@ div.piles-area {
 }
 
 div.play-area {
-	margin-top: 3em;
+	margin-top: 2em;
 }
 
 div.card-area {
 	width: 8em;
-	height: 10em;
+	height: 11em;
 	margin: 1em;
 	border-radius: 1em;
 	background-color: silver;
@@ -21,14 +21,21 @@ div.right-pile {
 
 div.card {
 	position: absolute;
-	width: 5.2em;
-	height: 8em;
-	border-radius: 1em;
-	border: black 0.5em solid;
-	padding: 0.5em 1em;
-	background-color: aqua;
+	width: 8em;
+	height: 12.2em;
+	background-size: 100%;
+	background-repeat: no-repeat;
 }
 
 div.card-area.invisible {
 	background-color: white;
+}
+
+input.message-button {
+	margin: 2em 0 0 20em;;
+	padding: 1em;
+	border-radius: 1em;
+	background-color: lime;
+	color:green;
+	font-weight: bold;
 }

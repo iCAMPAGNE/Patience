@@ -8,19 +8,22 @@ angular.module('Patience.app', ['ngRoute'])
     controllerAs: 'vm'
   });
 }])
-.controller('IndexCtrl', ['$timeout', '$interval', function($timeout, $interval) {
+.controller('IndexCtrl', ['$timeout', '$interval', '$route', function($timeout, $interval, $route) {
 	var vm = this;
 	
 	vm.name = "Patience";
+	
+	$('.card').remove();
 	
 	var zIndex = 100;
 	var cards = [];
 	var spread = [];
 	var nr = 0;
-	['klaver','schoppen','ruiten','harten'].forEach(function(color) {
+	// 0 = klaver, schoppen = 2, ruiten = 1, harten = 3
+	[0, 2, 1, 3].forEach(function(type) {
 		for (var value = 1; value <= 13; value++) {
 			const id = nr++;
-			cards.push({id: id, value: value, color: color, turned: false});
+			cards.push({id: id, value: value, type: type, turned: false});
 			spread.push(cards.length - 1);
 		}
 	});
@@ -43,7 +46,14 @@ angular.module('Patience.app', ['ngRoute'])
 		const card = cards[spread[spreadNr]];
 		spread.splice(spreadNr, 1);
 		var cardElement = createCard(card, 14, spread.length).css('top', '1.5em').css('left', '61.5em').css('z-index', zIndex--);
+		cardElement.css({'background-image': 'url(/images/card_back.png)'});
 		$(document.body).append(cardElement);
+	}
+	
+	vm.showButton = false;
+	vm.buttonText = 'HOERA !!  U heeft gewonnen! Druk op de knop voor een nieuw spelletje.';
+	vm.buttonAction = function() {
+		$route.reload();
 	}
 	
 	function rePile() {
@@ -60,11 +70,7 @@ angular.module('Patience.app', ['ngRoute'])
 		card.pile = pile;
 		card.position = position;
 		var cardElement = $('<div>').attr('id', card.id).addClass('card');
-		cardElement.css('background-color', card.turned ? '#DDFFEE' : '#448888');
-//		if (card.id == 13) {
-//			cardElement.append($('<img>').attr({'src': '/images/card_12.png', 'width':'100em'}));
-//		}
-		cardElement.append(card.color + ' ' + card.value);
+		cardElement.css({'background-image':  card.turned ? 'url(/images/card_' + card.id + '.png)' : 'url(/images/card_back.png)'});
 		cardElement.click(function () {
 			cardClick(card);
 		});
@@ -124,6 +130,7 @@ angular.module('Patience.app', ['ngRoute'])
 									console.log('GAME OVER');
 									$interval.cancel(promise);
 									turnedStockCardSuccess = true;
+									vm.showButton = true;
 									return;
 								} else {
 									console.log('Turns on stockCard ', stockCard);
@@ -163,6 +170,7 @@ angular.module('Patience.app', ['ngRoute'])
 				}
 			});
 			moveCardToPile(card, 13, position);
+			replaced = true;
 
 			var leeg = true;
 			cards.forEach(function (pileCard) {
@@ -187,7 +195,7 @@ angular.module('Patience.app', ['ngRoute'])
 					}
 				});
 				// First check match for final (first four) piles. Value and type should match.
-				if (pile <= 4 && ((!upperCard && card.value === 1) || (upperCard && upperCard.value === card.value - 1))) {
+				if (pile <= 4 && ((!upperCard && card.value === 1) || (upperCard && upperCard.value === card.value - 1 && upperCard.type === card.type))) {
 					replaced = true;
 					
 					cards.forEach(function (pileCard) {
@@ -197,7 +205,8 @@ angular.module('Patience.app', ['ngRoute'])
 					});
 				}
 				// Then check match for working piles (<= 7) Value and color should match.
-				if (!finalPilesOnly && pile > 4 && pile <= 11 && ((!upperCard && card.value === 13) || (upperCard && upperCard.value === card.value + 1))) {
+				if (!finalPilesOnly && pile > 4 && pile <= 11 && ((!upperCard && card.value === 13) || 
+						(upperCard && upperCard.value === card.value + 1 && upperCard.type % 2 != card.type % 2))) {
 					replaced = true;
 				}
 				if (replaced) {
@@ -206,7 +215,7 @@ angular.module('Patience.app', ['ngRoute'])
 							pileCard.turned = true;
 							var pileCardElement = $('#' + pileCard.id);
 							$timeout(function () { // Turning has to wait until card has been moved.
-								pileCardElement.css('background-color', '#DDFFEE');
+								pileCardElement.css({'background-image': 'url(/images/card_' + pileCard.id + '.png)'});
 							}, 1000);
 						}
 						if (card.pile > 4 && card.pile < 12 && pileCard.pile === card.pile && pileCard.position > card.position) {
@@ -218,6 +227,9 @@ angular.module('Patience.app', ['ngRoute'])
 				}
 				pile++;
 			}
+		}
+		if (!replaced) {
+			$('#' + card.id).effect('shake');
 		}
 		return replaced;
 	}
@@ -237,7 +249,8 @@ angular.module('Patience.app', ['ngRoute'])
 		cardElement.animate({left: 10 * left + 1.5 + 'em', top: 2 * (pile > 4 && pile < 12 ? pileOffset - 5 : 0) + (pile > 4 && pile < 12 ? 24.5 : 1.5) + 'em'});
 //		cardElement.css('z-index', position + 1);
 		cardElement.animate({zIndex: position + 1});
-		cardElement.css('background-color', card.turned ? '#DDFFEE' : '#448888');
+//		cardElement.css('background-color', card.turned ? '#DDFFEE' : '#448888');
+		cardElement.css({'background-image':  card.turned ? 'url(/images/card_' + card.id + '.png)' : 'url(/images/card_back.png)'});
 	}
 	
 	function findUpperCardOfPile(pile) {
