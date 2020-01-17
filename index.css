@@ -10,7 +10,7 @@ div.play-area {
 div.card-area {
 	width: 8em;
 	height: 11em;
-	margin: 1em;
+	margin: 1em 0.5em;
 	border-radius: 1em;
 	background-color: silver;
 }
@@ -22,9 +22,29 @@ div.right-pile {
 div.card {
 	position: absolute;
 	width: 8em;
-	height: 12.2em;
+	height: 11.2em;
 	background-size: 100%;
 	background-repeat: no-repeat;
+	border-radius: 1em;
+	border: 0.2em solid black;
+	background-color: #445566;
+}
+
+div.card.front div.inner-card {
+	height: 10em;
+	border: 0.6em solid #6666DD;
+	border-radius: 1em;
+	background-color: #DDDDFF;
+}
+div.inner-card div.card-text {
+	margin-top: -0.2em;
+	font-size: 2em;
+	font-weight: bold;
+	text-align: center;
+}
+
+div.card.back div.inner-card {
+	display: none;
 }
 
 div.card-area.invisible {
