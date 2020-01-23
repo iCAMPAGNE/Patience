@@ -75,17 +75,18 @@ angular.module('Patience.app', ['ngRoute'])
 		card.pile = pile;
 		card.position = position;
 		var cardElement = $('<div>').attr('id', card.id).addClass('card');
-//		cardElement.css({'border': 'solid 0.2em black', 'background-color': 'yellow', 'border-radius': '1em'});
 		var innerCard = $('<div>').addClass('inner-card').css('color', card.type % 2 === 0 ? 'black' : 'red');
 		cardElement.removeClass(card.turned ? 'back' : 'front').addClass(card.turned ? 'front' : 'back');
 		var cardTypes = ['♧', '♦', '♤', '♥'];
 		var value = null;
+		var icon = null
 		switch (card.value) {
 			case 1:
 				value = 'A';
 				break;
 			case 11:
 				value = 'J';
+				icon = card.type % 2 === 0 ? 'url(images/jack-black.png)' : 'url(images/jack-red.png)';
 				break;
 			case 12:
 				value = 'Q';
@@ -97,9 +98,11 @@ angular.module('Patience.app', ['ngRoute'])
 				value = card.value;
 		}
 		innerCard.append('<div class="card-text">' + value + ' ' + cardTypes[card.type] + '</div>');
+		if (icon) {
+			const backgroundDiv = $('<div>').addClass('card-icon').css('background-image', icon);
+			innerCard.append(backgroundDiv);
+		}
 		cardElement.append(innerCard);
-//		cardElement.addClass(card.turned ? 'front' : 'back');
-//		cardElement.css({'background-image':  card.turned ? 'url(images/card_' + card.id + '.png)' : 'url(images/card_back.png)'});
 		cardElement.click(function () {
 			cardClick(card);
 		});
@@ -176,7 +179,7 @@ angular.module('Patience.app', ['ngRoute'])
 						}
 					}
 				}
-			}, 10);
+			}, 20);
 		}
 	}
 	
@@ -251,7 +254,7 @@ angular.module('Patience.app', ['ngRoute'])
 				pile++;
 			}
 		}
-		if (!replaced) {
+		if (!replaced && finalPilesOnly) {
 			$('#' + card.id).effect('shake');
 		}
 		return replaced;
@@ -266,14 +269,9 @@ angular.module('Patience.app', ['ngRoute'])
 		}
 		const cardElement = $('#' + card.id);
 		var left = card.pile <= 4 ? card.pile - 1 : card.pile >= 13 ? card.pile - 8 : card.pile - 5;
-//		cardElement.css('left', 10 * left + 1.5 + 'em');
-//		cardElement.css('top', 2 * (pile > 4 && pile < 12 ? pileOffset - 5 : 0) + (pile > 4 && pile < 12 ? 26 : 1.5) + 'em');
-		cardElement.animate({zIndex: 1000});
+		cardElement.animate({zIndex: 1000 + position});
 		cardElement.animate({left: 9 * left + 1.0 + 'em', top: 3 * (pile > 4 && pile < 12 ? pileOffset - 5 : 0) + (pile > 4 && pile < 12 ? 28 : 1.5) + 'em'});
-//		cardElement.css('z-index', position + 1);
 		cardElement.animate({zIndex: position + 1});
-//		cardElement.css('background-color', card.turned ? '#DDFFEE' : '#448888');
-//		cardElement.css({'background-image':  card.turned ? 'url(images/card_' + card.id + '.png)' : 'url(images/card_back.png)'});
 		cardElement.removeClass(card.turned ? 'back' : 'front').addClass(card.turned ? 'front' : 'back');
 	}
 	

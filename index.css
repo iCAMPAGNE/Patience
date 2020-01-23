@@ -27,8 +27,6 @@ div.card {
 	position: absolute;
 	width: 7em;
 	height: 10.2em;
-	background-size: 100%;
-	background-repeat: no-repeat;
 	border-radius: 1em;
 	border: 0.6em double #6666AA;
 	background-color: #445566;
@@ -47,9 +45,18 @@ div.card.front div.inner-card {
 	background-color: #DDDDFF;
 }
 div.inner-card div.card-text {
-	font-size: 3em;
+	font-size: 4em;
+	font-family: Bookman Old Style;
+	line-height: 80%;
 	font-weight: bold;
 	text-align: center;
+	height: 40%;
+}
+.card-icon {
+	height: 60%;
+	margin: 0.2em;
+	background-size: 100%;
+	background-repeat: no-repeat;
 }
 
 div.card.back div.inner-card {
@@ -67,5 +74,5 @@ input.message-button {
 	background-color: lime;
 	color:green;
 	font-weight: bold;
-	font-size: x-large;
+	font-size: xx-large;
 }
