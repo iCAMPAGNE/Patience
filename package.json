@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "Kaartenspel Patience",
   "dependencies": {
-    "angular": "^1.7.6",
+    "angular": "^1.8.0",
     "angular-route": "~1.7.6",
     "browser-sync": "^2.26.3"
   },
