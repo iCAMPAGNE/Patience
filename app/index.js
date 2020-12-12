@@ -13,16 +13,13 @@ angular.module('Patience.app', ['ngRoute'])
 	
 	$('.card').remove(); // Cleanup cards of previous game.
 
-	$('body').css('font-size', $(document).width() / 66); // Use full width
-	
-	vm.init = function() {
-		console.log('init');
-	}
+	$('body').css('font-size', $(document).width() / 70); // Use full width
 	
 	var cards = [];
 	var spread = [];
 	var nr = 0;
 	// 0 = klaver, schoppen = 2, ruiten = 1, harten = 3
+	// Create all Cards
 	[0, 2, 1, 3].forEach(function(type) {
 		for (var value = 1; value <= 13; value++) {
 			const id = nr++;
@@ -31,6 +28,7 @@ angular.module('Patience.app', ['ngRoute'])
 		}
 	});
 	
+	// Shake and spread cards on the seven play-fields
 	for (var pile = 5; pile <= 11; pile++) {
 		var position = 1;
 		for (var x = 1; x <= pile - 4; x++) {
@@ -39,11 +37,12 @@ angular.module('Patience.app', ['ngRoute'])
 			const card = cards[spread[spreadNr]];
 			spread.splice(spreadNr, 1);
 			card.turned = x === pile - 4;
-			var cardElement = createCard(card, pile, x).css({'top': 3 * x + 13 + 'em', 'z-index': position++});
+			var cardElement = createCard(card, pile, x).css({'top': 2.5 * x + 12.5 + 'em', 'z-index': position++});
 			playField.append(cardElement);
 		}
 	}
 	
+	// Shake and put the rest of the Cards on the pile upper right
 	const playField = $('#pile-14');
 	while (spread.length > 0) {
 		const spreadNr = Math.floor(Math.random() * spread.length);
@@ -86,7 +85,7 @@ angular.module('Patience.app', ['ngRoute'])
 				break;
 			case 11:
 				value = 'J';
-				icon = card.type % 2 === 0 ? 'url(images/jack-black.png)' : 'url(images/jack-red.png)';
+//				icon = card.type % 2 === 0 ? 'url(images/jack-black.png)' : 'url(images/jack-red.png)';
 				break;
 			case 12:
 				value = 'Q';
@@ -270,7 +269,7 @@ angular.module('Patience.app', ['ngRoute'])
 		const cardElement = $('#' + card.id);
 		var left = card.pile <= 4 ? card.pile - 1 : card.pile >= 13 ? card.pile - 8 : card.pile - 5;
 		cardElement.animate({zIndex: 1000 + position});
-		cardElement.animate({left: 9 * left + 1.0 + 'em', top: 3 * (pile > 4 && pile < 12 ? pileOffset - 5 : 0) + (pile > 4 && pile < 12 ? 28 : 1.5) + 'em'});
+		cardElement.animate({left: 9 * left + 1.0 + 'em', top: 2.5 * (pile > 4 && pile < 12 ? pileOffset - 5 : 0) + (pile > 4 && pile < 12 ? 25 : 1.5) + 'em'});
 		cardElement.animate({zIndex: position + 1});
 		cardElement.removeClass(card.turned ? 'back' : 'front').addClass(card.turned ? 'front' : 'back');
 	}

@@ -8,12 +8,12 @@ div.piles-area {
 }
 
 div.play-area {
-	margin-top: 2em;
+	margin-top: 0em;
 }
 
 div.card-area {
 	width: 8em;
-	height: 11em;
+	height: 11.5em;
 	margin: 1em 0.5em;
 	border-radius: 1em;
 	background-color: #333355;
@@ -45,7 +45,7 @@ div.card.front div.inner-card {
 	background-color: #DDDDFF;
 }
 div.inner-card div.card-text {
-	font-size: 4em;
+	font-size: 3em;
 	font-family: Bookman Old Style;
 	line-height: 80%;
 	font-weight: bold;
@@ -74,5 +74,6 @@ input.message-button {
 	background-color: lime;
 	color:green;
 	font-weight: bold;
-	font-size: xx-large;
+	font-size: x-large;
+	cursor: pointer;
 }
