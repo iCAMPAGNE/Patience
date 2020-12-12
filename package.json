@@ -1,6 +1,6 @@
 {
   "name": "Patience",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Kaartenspel Patience",
   "dependencies": {
     "angular": "^1.7.6",
