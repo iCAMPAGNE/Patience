@@ -15,6 +15,17 @@ angular.module('Patience.app', ['ngRoute'])
 
 	$('body').css('font-size', $(document).width() / 70); // Use full width
 	
+	vm.fullScreen = function() { // Wordt nu niet gebruikt, bedoeld voor tablet.
+		  var elem = document.documentElement;
+		  if (elem.requestFullscreen) {
+			    elem.requestFullscreen();
+			  } else if (elem.webkitRequestFullscreen) { /* Safari */
+			    elem.webkitRequestFullscreen();
+			  } else if (elem.msRequestFullscreen) { /* IE11 */
+			    elem.msRequestFullscreen();
+			  }
+	}
+	
 	var cards = [];
 	var spread = [];
 	var nr = 0;
