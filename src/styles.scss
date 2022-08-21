@@ -1,1 +1,97 @@
-/* You can add global styles to this file, and also import other style files */
+$body_height: 95vh;
+$body_width: 95vw;
+
+body {
+    background-color: #222244;
+    height: $body_height;
+    width: $body_width;
+}
+
+div.page-area {
+    width: calc(#{$body_width});
+    height: calc(#{$body_height});
+}
+
+div.stack-area {
+    height: 30%;
+}
+
+div.play-area {
+    height: 60%;
+}
+
+div.piles-area {
+    display: -webkit-flex;
+    display: flex;
+}
+
+div.card-area {
+    width: calc(#{$body_width} / 9);
+    height: calc(#{$body_height} / 5);
+    margin: 1em 0.5em;
+    border-radius: 1em;
+    background-color: #333355;
+}
+
+div.right-pile {
+    margin-left: auto;
+}
+
+div.card {
+    position: absolute;
+    width: calc(#{$body_width} / 9 - 1em);
+    height: calc(#{$body_height} / 5 - 1em);
+    border-radius: 1em;
+    border: 0.6em double #6666AA;
+    background-color: #445566;
+}
+
+div.card.front {
+    border: 0.2em solid #4444FF;
+    width: inherit;
+    height: inherit;
+}
+
+div.card.front {
+    border-radius: 1em;
+    background-color: #DDDDFF;
+}
+
+div.inner-card > div.card-text {
+    font-size: 200%;
+    font-family: Bookman Old Style;
+    line-height: 80%;
+    font-weight: bold;
+    text-align: center;
+    height: 40%;
+}
+
+div.type-color {
+    color: red;
+}
+
+.card-icon {
+    height: 60%;
+    margin: 0.2em;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+div.card.back div.inner-card {
+    display: none;
+}
+
+div.card-area.invisible {
+    background-color: inherit;
+}
+
+input.message-button {
+    margin: 2em 0 0 5em;;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: lime;
+    color:green;
+    font-weight: bold;
+    font-size: x-large;
+    cursor: pointer;
+}
