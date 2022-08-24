@@ -6,6 +6,7 @@ interface Card {
     type:number;
     pile?:Pile;
     position?: position;
+    turning: boolean;
     turned: boolean;
 }
 interface Pile {
@@ -38,7 +39,7 @@ export class HomeComponent implements OnInit {
       [0, 1, 2, 3].forEach((type:number) => {
           for (let value = 1; value <= 13; value++) {
               const id = this.nr++;
-              this.cards.push({id: id, value: value, type: type, turned: false});
+              this.cards.push({id: id, value: value, type: type, turning: false, turned: false});
               this.spread.push(this.cards.length - 1);
           }
       });
@@ -49,7 +50,7 @@ export class HomeComponent implements OnInit {
               const spreadNr = Math.floor(Math.random() * this.spread.length);
               const card = this.cards[this.spread[spreadNr]];
               this.spread.splice(spreadNr, 1);
-              card.turned = x === pileNr - 5;
+              card.turned = x === pileNr - 4;
               this.piles[pileNr].cards.push(card);
           }
       }
@@ -64,7 +65,20 @@ export class HomeComponent implements OnInit {
       }
   }
 
+  draaiom(card:Card) {
+      card.turning = true;
+      const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
+      flipCardElement.animate([{ transform: 'rotateY(180deg) '}, { transform: 'translateX(-150px)' } ], { duration: 500 });
+      setTimeout(() => {
+          card.turned = true;
+          card.turning = false;
+          this.piles[5].cards.pop();
+          this.piles[4].cards.push(card);
+      }, 490);
+  }
+
   cardClick(pileNr:number, cardNr:number) {
+      console.log(pileNr + '/' + cardNr);
     const card = this.cards.find(c => c.id == cardNr);
     if (!card || !card.turned) {
       return;
@@ -88,16 +102,29 @@ export class HomeComponent implements OnInit {
   }
 
   turnCard(card:Card) {
-      card.turned = true;
 
       const cardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
       console.log(cardElement.offsetLeft);
-      cardElement.animate([{ transform: 'translateX(-300px)' } ], { duration: 400 });
-
+      cardElement.animate([{ transform: 'rotateY(0deg) ' } ], { duration: 400 });
       setTimeout(() => {
-          this.piles[5].cards.pop();
-          this.piles[4].cards.push(card);
-      }, 200);
+          card.turned = true;
+      }, 400);
+//      cardElement.animate([{ transform: 'rotateY(179.9deg)' } ], { duration: 4000 });
+      // setTimeout(() => {
+      //     card.turned = true;
+      //     cardElement.animate([{ transform: 'translateX(-300px)' } ], { duration: 800 });
+      //     setTimeout(() => {
+      //         this.piles[5].cards.pop();
+      //         this.piles[4].cards.push(card);
+      //     }, 400);
+      // }, 200);
+      // setTimeout(() => {
+      //
+      //     setTimeout(() => {
+      //         this.piles[5].cards.pop();
+      //         this.piles[4].cards.push(card);
+      //     }, 400);
+      // });
   }
 
     createCard(card:Card, pile:Pile, position:position) {
