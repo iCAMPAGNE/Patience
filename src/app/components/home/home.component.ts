@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
               const spreadNr = Math.floor(Math.random() * this.spread.length);
               const card = this.cards[this.spread[spreadNr]];
               this.spread.splice(spreadNr, 1);
-              card.turned = x === pileNr - 4;
+              card.turned = x === pileNr - 5;
               this.piles[pileNr].cards.push(card);
           }
       }
@@ -65,7 +65,8 @@ export class HomeComponent implements OnInit {
       }
   }
 
-  draaiom(card:Card) {
+  draaiom(event: Event, card:Card) {
+      event.stopPropagation(); // Prevent exectution empty stock-pile click
       card.turning = true;
       const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
       flipCardElement.animate([{ transform: 'rotateY(180deg) '}, { transform: 'translateX(-150px)' } ], { duration: 500 });
@@ -76,6 +77,25 @@ export class HomeComponent implements OnInit {
           this.piles[4].cards.push(card);
       }, 490);
   }
+
+  rechargePile() {
+      if (this.piles[4].cards.length > 0) {
+          const card = this.piles[4].cards[this.piles[4].cards.length - 1];
+          if (card) {
+              card.turned = false;
+              card.turning = true;
+              const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
+              flipCardElement.animate([ { transform: 'rotateY(-180deg)' }, { transform: 'translateX(150px)' } ], { duration: 50 });
+              setTimeout(() => {
+                  card.turning = false;
+                  this.piles[4].cards.pop();
+                  this.piles[5].cards.push(card);
+                  this.rechargePile();
+              }, 49);
+          }
+      }
+  }
+
 
   cardClick(pileNr:number, cardNr:number) {
       console.log(pileNr + '/' + cardNr);

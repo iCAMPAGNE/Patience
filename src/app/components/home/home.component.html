@@ -9,44 +9,33 @@
         <div id="pile-99" class="card-area invisible"></div>
         <div id="pile-4" class="card-area">
             <div *ngFor="let card of piles[4].cards;" class="fp-flip-card">
-                <div class="fp-flip-card-inner" (click)="cardClick(4, card.id)">
-                    <div class="fp-flip-card-front-turned" [ngClass]="{'type-color':card.type % 2 == 1}">{{card.value}} {{cardTypes[card.type]}}</div>
+                <div id="card-{{card.id}}" class="fp-flip-card-inner" (click)="cardClick(4, card.id)">
+                    <div class="card-format front-4" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'type-color':card.type % 2 == 1}">
+                        {{card.value}} {{cardTypes[card.type]}}
+                    </div>
+                    <div class="card-format back-4" [ngClass]="{'turning':card.turning, 'turned':card.turned}"></div>
                 </div>
             </div>
         </div>
-        <div id="pile-5" class="card-area">
+        <div id="pile-5" class="card-area" (click)="rechargePile()">
             <div *ngFor="let card of piles[5].cards;" class="fp-flip-card">
-                <div id="card-{{card.id}}" class="fp-flip-card-inner" (click)="draaiom(card)">
-                    <div [ngClass]="card.turning ? 'fp-flip-card-back-turning' : card.turned ? 'fp-flip-card-back-turned' : 'fp-flip-card-back'"></div>
-                    <div
-                            [ngClass]="[card.turning ? 'fp-flip-card-front-turning' :  card.turned ? 'fp-flip-card-front-turned' : 'fp-flip-card-front', card.type % 2 == 1 ? 'type-color':'']">
+                <div id="card-{{card.id}}" class="fp-flip-card-inner" (click)="draaiom($event, card)">
+                    <div class="card-format front" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'type-color':card.type % 2 == 1} ">
                         {{card.value}} {{cardTypes[card.type]}}
                     </div>
+                    <div class="card-format back" [ngClass]="{'turning':card.turning, 'turned':card.turned}"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="play-area" class="piles-area play-area">
-        <div *ngFor="let pileNr of [6,7,8,9,10,11]" class="card-area">
+        <div *ngFor="let pileNr of [6,7,8,9,10,11,12]" class="card-area">
             <div *ngFor="let card of piles[pileNr].cards; let i = index" id="card-{{card.id}}" class="card inner-card play-card"
                     [ngClass]="{'front':card.turned, 'type-color':card.type % 2 == 1}"
                     style="margin-top: {{i*3}}em;" (click)="cardClick(pileNr, card.id)">
                 <div class="card-text" *ngIf="card.turned">{{card.value}} {{cardTypes[card.type]}}</div>
             </div>
-        </div>
-    </div>
-</div>
-
-<div *ngFor="let card of piles[12].cards; let i = index" class="flip-card">
-    <div id="card-{{card.id}}" class="flip-card-inner" (click)="draaiom(card)">
-        <div [ngClass]="card.turned ? 'flip-card-front-turned' : 'flip-card-front'">
-            Voorkant {{card.turned}}
-        </div>
-        <div [ngClass]="card.turned ? 'flip-card-back-turned' : 'flip-card-back'">
-            <h1>John Doe</h1>
-            <p>Architect & Engineer</p>
-            <p>We love that guy</p>
         </div>
     </div>
 </div>

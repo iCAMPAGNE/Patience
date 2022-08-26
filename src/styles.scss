@@ -50,10 +50,7 @@ div.card {
     position: absolute;
     width: calc(#{$body_width} / 9 - 1em);
     height: calc(#{$body_height} / 5 - 1em);
-//    border-radius: 1em;
-//    border: 0.6em double #6666AA;
     perspective: 1000px;
-//    background-color: #445566;
 }
 
 div.card.front {
@@ -95,7 +92,7 @@ div.type-color {
 }
 
 
-.fp-flip-card-front, .fp-flip-card-back, .fp-flip-card-front-turning, .fp-flip-card-front-turned, .fp-flip-card-back-turning, .fp-flip-card-back-turned {
+.card-format {
     position: absolute;
     border: 0.3em double #6666AA;
     border-radius: 0.5em;
@@ -103,34 +100,51 @@ div.type-color {
     height: calc(#{$body_height} / 5 - 0.5em);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+
+    &.back-4 {
+        background-color: #DDDDFF;
+        color: green;
+        transform: rotateY(180deg);
+        &.turning {
+            transform: rotateY(0deg);
+        }
+    }
+
+    &.front-4 {
+        background-color: #DDDDFF;
+        &.turning {
+            transform: rotateY(180deg);
+        }
+    }
+
+    &.back {
+        background-color: #445566;
+        &.turning {
+            transform: rotateY(180deg);
+        }
+    }
+
+    &.front {
+        background-color: #DDDDFF;
+        transform: rotateY(180deg);
+        &.turning, &.turned {
+            transform: rotateY(0deg);
+        }
+    }
 }
 
 .fp-flip-card-front {
-    background-color: #DDDDFF;
     transform: rotateY(180deg);
 }
 
 .fp-flip-card-back {
-    background-color: #445566;
 }
 
 .fp-flip-card-front-turning {
-    background-color: #DDDDFF;
     transform: rotateY(0deg);
 }
 
-.fp-flip-card-back-turning {
-    background-color: #445566;
-    transform: rotateY(180deg);
-}
-
 .fp-flip-card-front-turned {
-    background-color: #DDDDFF;
-}
-
-.fp-flip-card-back-turned {
-    background-color: #445566;
-    transform: rotateY(180deg);
 }
 
 
@@ -160,54 +174,4 @@ input.message-button {
     font-weight: bold;
     font-size: x-large;
     cursor: pointer;
-}
-
-
-
-.flip-card {
-    position: absolute;
-    width: calc(#{$body_width} / 9 - 1em);
-    height: calc(#{$body_height} / 5 - 1em);
-    border-radius: 1em;
-    border: 0.6em double #6666AA;
-    perspective: 1000px;
-}
-
-.flip-card-inner {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-}
-
-
-.flip-card-front, .flip-card-back, .flip-card-front-turned, .flip-card-back-turned {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
-
-.flip-card-front {
-    background-color: #bbb;
-    color: black;
-}
-
-.flip-card-back {
-    background-color: #2980b9;
-    color: white;
-    transform: rotateY(180deg);
-}
-
-.flip-card-front-turned {
-    background-color: #bbb;
-    color: black;
-    transform: rotateY(180deg);
-}
-
-.flip-card-back-turned {
-    background-color: #2980b9;
-    color: white;
 }
