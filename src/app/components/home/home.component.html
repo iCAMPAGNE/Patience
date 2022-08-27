@@ -2,10 +2,10 @@
     <div id="piles" class="piles-area stack-area">
         <div *ngFor="let pileNr of [0,1,2,3]">
             <div id="pile-{{pileNr}}" class="card-area sorted-pile">
-                <div *ngFor="let card of piles[pileNr].cards;" class="fp-flip-card">
-                    <div id="card-{{card.id}}" class="fp-flip-card-inner" (click)="cardClick(pileNr, card.id)">
-                        <div class="card-format front turned" [ngClass]="{'type-color':card.type % 2 == 1}">
-                            {{card.value}} {{cardTypes[card.type]}}
+                <div *ngFor="let card of piles[pileNr].cards;" class="pile-cards">
+                    <div id="card-{{card.id}}" class="card-envelope" (click)="cardClick(pileNr, card.id)">
+                        <div class="card-format front turned" [ngClass]="{'type-color': card.blackType}">
+                            {{card.value}} {{card.type}}
                         </div>
                     </div>
                 </div>
@@ -13,20 +13,20 @@
         </div>
         <div id="pile-99" class="card-area invisible"></div>
         <div id="pile-4" class="card-area">
-            <div *ngFor="let card of piles[4].cards;" class="fp-flip-card">
-                <div id="card-{{card.id}}" class="fp-flip-card-inner" (click)="cardClick(4, card.id)">
-                    <div class="card-format front-4" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'type-color':card.type % 2 == 1}">
-                        {{card.value}} {{cardTypes[card.type]}}
+            <div *ngFor="let card of piles[4].cards;" class="pile-cards">
+                <div id="card-{{card.id}}" class="card-envelope" (click)="cardClick(4, card.id)">
+                    <div class="card-format front-4" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'type-color':card.blackType}">
+                        {{card.value}} {{card.type}}
                     </div>
                     <div class="card-format back-4" [ngClass]="{'turning':card.turning, 'turned':card.turned}"></div>
                 </div>
             </div>
         </div>
         <div id="pile-5" class="card-area" (click)="rechargePile()">
-            <div *ngFor="let card of piles[5].cards;" class="fp-flip-card">
-                <div id="card-{{card.id}}" class="fp-flip-card-inner" (click)="draaiom($event, card)">
-                    <div class="card-format front" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'type-color':card.type % 2 == 1}">
-                        {{card.value}} {{cardTypes[card.type]}}
+            <div *ngFor="let card of piles[5].cards;" class="pile-cards">
+                <div id="card-{{card.id}}" class="card-envelope" (click)="draaiom($event, card)">
+                    <div class="card-format front" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'type-color':card.blackType}">
+                        {{card.value}} {{card.type}}
                     </div>
                     <div class="card-format back" [ngClass]="{'turning':card.turning, 'turned':card.turned}"></div>
                 </div>
@@ -37,10 +37,10 @@
     <div id="play-area" class="piles-area play-area">
         <div *ngFor="let pileNr of [6,7,8,9,10,11,12]">
             <div id="pile-{{pileNr}}" class="card-area">
-                <div *ngFor="let card of piles[pileNr].cards; let i = index;" class="fp-flip-card">
-                    <div id="card-{{card.id}}" class="fp-flip-card-inner" style="margin-top: {{i*1.1}}em;" (click)="cardClick(pileNr, card.id)">
-                        <div class="card-format" [ngClass]="{'turning':card.turning, 'turned front':card.turned, 'type-color':card.type % 2 == 1}">
-                            {{card.value}} {{cardTypes[card.type]}}
+                <div *ngFor="let card of piles[pileNr].cards; let i = index;" class="pile-cards">
+                    <div id="card-{{card.id}}" class="card-envelope" style="margin-top: {{i*3}}em;" (click)="cardClick(pileNr, card.id)">
+                        <div class="card-format" [ngClass]="{'turning':card.turning, 'turned front':card.turned, 'type-color':card.blackType}">
+                            {{card.value}} {{card.type}}
                         </div>
                         <div class="card-format" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'back':!card.turned}"></div>
                     </div>

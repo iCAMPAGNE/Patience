@@ -2,12 +2,12 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 
 interface Card {
     id:number;
-    value:number;
-    type:number;
-    pile?:Pile;
-    position?: position;
-    turning: boolean;
-    turned: boolean;
+    value:string;
+    type:string;
+    blackType:boolean;
+    pileNr:number;
+    turning:boolean;
+    turned:boolean;
 }
 interface Pile {
     cards:Card[];
@@ -22,7 +22,6 @@ interface position {
 })
 
 export class HomeComponent implements OnInit {
-    cardTypes = ['♧', '♦', '♤', '♥'];
     cards:Card[] = [];
     spread:number[] = [];
     nr:number = 0;
@@ -36,10 +35,30 @@ export class HomeComponent implements OnInit {
       this.piles.push({cards: []});
     }
 
-      [0, 1, 2, 3].forEach((type:number) => {
-          for (let value = 1; value <= 13; value++) {
+      ['♧', '♦', '♤', '♥'].forEach((type:string) => {
+          for (let valueNr = 1; valueNr <= 13; valueNr++) {
+              const blackType:boolean = ['♧', '♦'].indexOf(type) >= 0;
+              let value:string = '';
+              switch (valueNr) {
+                  case 1:
+                      value = 'A';
+                      break;
+                  case 11:
+                      value = 'J';
+//				icon = card.type % 2 === 0 ? 'url(images/jack-black.png)' : 'url(images/jack-red.png)';
+                      break;
+                  case 12:
+                      value = 'Q';
+                      break;
+                  case 13:
+                      value = 'K';
+                      break;
+                  default:
+                      value = valueNr.toLocaleString();
+              }
+
               const id = this.nr++;
-              this.cards.push({id: id, value: value, type: type, turning: false, turned: false});
+              this.cards.push({id: id, value: value, type: type, blackType: blackType, pileNr: 5, turning: false, turned: false});
               this.spread.push(this.cards.length - 1);
           }
       });
@@ -49,6 +68,7 @@ export class HomeComponent implements OnInit {
           for (let x = 1; x <= pileNr - 5; x++) {
               const spreadNr = Math.floor(Math.random() * this.spread.length);
               const card = this.cards[this.spread[spreadNr]];
+              card.pileNr = pileNr;
               this.spread.splice(spreadNr, 1);
               card.turned = x === pileNr - 5;
               this.piles[pileNr].cards.push(card);
@@ -74,6 +94,7 @@ export class HomeComponent implements OnInit {
           card.turned = true;
           card.turning = false;
           this.piles[5].cards.pop();
+          card.pileNr = 4;
           this.piles[4].cards.push(card);
       }, 490);
   }
@@ -89,6 +110,7 @@ export class HomeComponent implements OnInit {
               setTimeout(() => {
                   card.turning = false;
                   this.piles[4].cards.pop();
+                  card.pileNr = 5;
                   this.piles[5].cards.push(card);
                   this.rechargePile();
               }, 49);
@@ -113,9 +135,13 @@ export class HomeComponent implements OnInit {
           cardElement.animate([{ transform: 'translate(' + moveHorizontal + 'px,' + moveVertical + 'px)'}], { duration: 500 });
           setTimeout(() => {
               this.piles[pileNr].cards.pop();
+              card.pileNr = tryPileNr;
               this.piles[tryPileNr].cards.push(card);
           }, 500);
           searching = false;
+
+          // turn around next (most lowest) card of that pile.
+
       }
     }
   }
@@ -145,7 +171,7 @@ export class HomeComponent implements OnInit {
       //     }, 400);
       // });
   }
-
+/*
     createCard(card:Card, pile:Pile, position:position) {
         card.pile = pile;
         card.position = position;
@@ -184,4 +210,5 @@ export class HomeComponent implements OnInit {
 
         return null;// cardElement;
     }
+*/
 }

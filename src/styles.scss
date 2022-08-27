@@ -33,10 +33,6 @@ div.card-area {
     background-color: #333355;
 }
 
-div.right-pile {
-    margin-left: auto;
-}
-
 div.card {
     position: absolute;
     width: calc(#{$body_width} / 9 - 1em);
@@ -46,53 +42,22 @@ div.card {
     background-color: #445566;
 }
 
-.fp-flip-card {
+div.pile-cards {
     position: absolute;
     width: calc(#{$body_width} / 9 - 1em);
     height: calc(#{$body_height} / 5 - 1em);
     perspective: 1000px;
 }
 
-div.card.front {
-    border: 0.2em solid #4444FF;
-    width: inherit;
-    height: inherit;
-}
-
-div.card.front {
-    border-radius: 1em;
-    background-color: #DDDDFF;
-}
-
-div.inner-card > div.card-text {
-    font-size: 200%;
-    font-family: Bookman Old Style;
-    line-height: 80%;
-    font-weight: bold;
-    text-align: center;
-    height: 40%;
-}
-
-div.type-color {
-    color: red;
-}
-
-
-
-.fp-flip-card-inner {
+div.card-envelope {
     width: 100%;
     height: 100%;
-    text-align: center;
-    font-size: 200%;
-    font-family: Bookman Old Style;
-    line-height: 80%;
-    font-weight: bold;
     transition: transform 0.6s;
     transform-style: preserve-3d;
 }
 
 
-.card-format {
+div.card-format {
     position: absolute;
     border: 0.3em double #6666AA;
     border-radius: 0.5em;
@@ -100,6 +65,16 @@ div.type-color {
     height: calc(#{$body_height} / 5 - 0.5em);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+
+    text-align: center;
+    font-size: 200%;
+    font-family: Bookman Old Style;
+    line-height: 80%;
+    font-weight: bold;
+    &.type-color {
+        color: red;
+    }
+
 
     &.back-4 {
         background-color: #DDDDFF;
