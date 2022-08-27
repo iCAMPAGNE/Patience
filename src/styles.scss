@@ -103,7 +103,6 @@ div.type-color {
 
     &.back-4 {
         background-color: #DDDDFF;
-        color: green;
         transform: rotateY(180deg);
         &.turning {
             transform: rotateY(0deg);
@@ -133,21 +132,6 @@ div.type-color {
     }
 }
 
-.fp-flip-card-front {
-    transform: rotateY(180deg);
-}
-
-.fp-flip-card-back {
-}
-
-.fp-flip-card-front-turning {
-    transform: rotateY(0deg);
-}
-
-.fp-flip-card-front-turned {
-}
-
-
 
 
 .card-icon {
@@ -155,10 +139,6 @@ div.type-color {
     margin: 0.2em;
     background-size: 100%;
     background-repeat: no-repeat;
-}
-
-div.card.back div.inner-card {
-    display: none;
 }
 
 div.card-area.invisible {

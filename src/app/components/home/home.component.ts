@@ -98,7 +98,6 @@ export class HomeComponent implements OnInit {
 
 
   cardClick(pileNr:number, cardNr:number) {
-      console.log(pileNr + '/' + cardNr);
     const card = this.cards.find(c => c.id == cardNr);
     if (!card || !card.turned) {
       return;
@@ -109,8 +108,8 @@ export class HomeComponent implements OnInit {
       if (tryPileNr != pileNr) {
           const pileElement = this.elementRef.nativeElement.querySelector('#pile-' + tryPileNr);
           const cardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
-          const moveHorizontal:number = pileElement.offsetLeft - cardElement.offsetLeft;
-          const moveVertical:number = pileElement.offsetTop - cardElement.offsetTop;
+          const moveHorizontal:number = pileElement.offsetLeft - cardElement.getBoundingClientRect().left;
+          const moveVertical:number = pileElement.offsetTop - cardElement.getBoundingClientRect().top;
           cardElement.animate([{ transform: 'translate(' + moveHorizontal + 'px,' + moveVertical + 'px)'}], { duration: 500 });
           setTimeout(() => {
               this.piles[pileNr].cards.pop();
