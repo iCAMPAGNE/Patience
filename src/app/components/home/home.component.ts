@@ -137,11 +137,22 @@ export class HomeComponent implements OnInit {
               this.piles[pileNr].cards.pop();
               card.pileNr = tryPileNr;
               this.piles[tryPileNr].cards.push(card);
+
+              // turn around next (most lowest) card of that pile.
+              const nextCard = this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1];
+              console.log(this.piles[pileNr].cards.length);
+              console.log(nextCard);
+              if (nextCard && !nextCard.turned) {
+                  nextCard.turning = true;
+                  const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + nextCard.id);
+                  flipCardElement.animate([{transform: 'rotateY(180deg) '}, {transform: 'rotateY(0deg) '}], {duration: 500});
+                  setTimeout(() => {
+                      nextCard.turned = true;
+                      nextCard.turning = false;
+                  }, 490);
+              }
           }, 500);
           searching = false;
-
-          // turn around next (most lowest) card of that pile.
-
       }
     }
   }

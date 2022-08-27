@@ -39,10 +39,10 @@
             <div id="pile-{{pileNr}}" class="card-area">
                 <div *ngFor="let card of piles[pileNr].cards; let i = index;" class="pile-cards">
                     <div id="card-{{card.id}}" class="card-envelope" style="margin-top: {{i*3}}em;" (click)="cardClick(pileNr, card.id)">
-                        <div class="card-format" [ngClass]="{'turning':card.turning, 'turned front':card.turned, 'type-color':card.blackType}">
+                        <div class="card-format front" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'type-color':card.blackType}">
                             {{card.value}} {{card.type}}
                         </div>
-                        <div class="card-format" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'back':!card.turned}"></div>
+                        <div class="card-format back" [ngClass]="{'turning':card.turning, 'turned':card.turned}"></div>
                     </div>
                 </div>
             </div>

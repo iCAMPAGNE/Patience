@@ -93,7 +93,7 @@ div.card-format {
 
     &.back {
         background-color: #445566;
-        &.turning {
+        &.turning, &.turned {
             transform: rotateY(180deg);
         }
     }
