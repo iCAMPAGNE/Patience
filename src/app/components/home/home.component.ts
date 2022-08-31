@@ -2,7 +2,8 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 
 interface Card {
     id:number;
-    value:string;
+    value:number;
+    valueSymbol:string;
     type:string;
     blackType:boolean;
     pileNr:number;
@@ -36,29 +37,29 @@ export class HomeComponent implements OnInit {
     }
 
       ['♧', '♦', '♤', '♥'].forEach((type:string) => {
-          for (let valueNr = 1; valueNr <= 13; valueNr++) {
-              const blackType:boolean = ['♧', '♦'].indexOf(type) >= 0;
-              let value:string = '';
-              switch (valueNr) {
+          for (let value = 1; value <= 13; value++) {
+              const blackType:boolean = ['♧', '♤'].indexOf(type) >= 0;
+              let valueSymbol:string = '';
+              switch (value) {
                   case 1:
-                      value = 'A';
+                      valueSymbol = 'A';
                       break;
                   case 11:
-                      value = 'J';
+                      valueSymbol = 'J';
 //				icon = card.type % 2 === 0 ? 'url(images/jack-black.png)' : 'url(images/jack-red.png)';
                       break;
                   case 12:
-                      value = 'Q';
+                      valueSymbol = 'Q';
                       break;
                   case 13:
-                      value = 'K';
+                      valueSymbol = 'K';
                       break;
                   default:
-                      value = valueNr.toLocaleString();
+                      valueSymbol = value.toLocaleString();
               }
 
               const id = this.nr++;
-              this.cards.push({id: id, value: value, type: type, blackType: blackType, pileNr: 5, turning: false, turned: false});
+              this.cards.push({id: id, value: value, valueSymbol: valueSymbol, type: type, blackType: blackType, pileNr: 5, turning: false, turned: false});
               this.spread.push(this.cards.length - 1);
           }
       });
@@ -86,20 +87,22 @@ export class HomeComponent implements OnInit {
   }
 
   draaiom(event: Event, card:Card) {
-      event.stopPropagation(); // Prevent exectution empty stock-pile click
       card.turning = true;
+      event.stopPropagation(); // Prevent exectution empty stock-pile click
       const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
-      flipCardElement.animate([{ transform: 'rotateY(180deg) '}, { transform: 'translateX(-150px)' } ], { duration: 500 });
+      flipCardElement.animate([{ transform: 'rotateY(180deg) '}, { transform: 'translateX(-150px)' } ], { duration: 200 });
       setTimeout(() => {
           card.turned = true;
-          card.turning = false;
           this.piles[5].cards.pop();
           card.pileNr = 4;
           this.piles[4].cards.push(card);
-      }, 490);
+          card.turning = false;
+      }, 190);
   }
 
-  rechargePile() {
+  rechargePile(pileNr:number) {
+      if (this.piles[pileNr].cards.find(c => c.turning)) return;
+      console.log('rechargePile');
       if (this.piles[4].cards.length > 0) {
           const card = this.piles[4].cards[this.piles[4].cards.length - 1];
           if (card) {
@@ -112,48 +115,64 @@ export class HomeComponent implements OnInit {
                   this.piles[4].cards.pop();
                   card.pileNr = 5;
                   this.piles[5].cards.push(card);
-                  this.rechargePile();
+                  this.rechargePile(pileNr);
               }, 49);
           }
       }
   }
 
 
-  cardClick(pileNr:number, cardNr:number) {
-    const card = this.cards.find(c => c.id == cardNr);
+  cardClick(pileNr:number, card:Card) {
+    console.log('clicked card = ', card);
     if (!card || !card.turned) {
       return;
     }
 
-    let searching:boolean = true;
-    for (let tryPileNr = 0; searching && (tryPileNr < 4);tryPileNr++) {
-      if (tryPileNr != pileNr) {
-          const pileElement = this.elementRef.nativeElement.querySelector('#pile-' + tryPileNr);
-          const cardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
-          const moveHorizontal:number = pileElement.offsetLeft - cardElement.getBoundingClientRect().left;
-          const moveVertical:number = pileElement.offsetTop - cardElement.getBoundingClientRect().top;
-          cardElement.animate([{ transform: 'translate(' + moveHorizontal + 'px,' + moveVertical + 'px)'}], { duration: 500 });
-          setTimeout(() => {
-              this.piles[pileNr].cards.pop();
-              card.pileNr = tryPileNr;
-              this.piles[tryPileNr].cards.push(card);
+    for (let tryPileNr of [0,1,2,3,6,7,8,9,10,11,12]) {
+        if (tryPileNr === pileNr) continue;
+        const bottommostCard:Card = this.piles[tryPileNr].cards[this.piles[tryPileNr].cards.length - 1];
+        console.log('candidate');
+        if (!((tryPileNr < 4 && ((card.value === 1 && !bottommostCard) ||
+                (bottommostCard && card.value === bottommostCard.value + 1 && card.type === bottommostCard.type) ))
+              || (tryPileNr >= 6 && !bottommostCard && card.value === 13)
+              || (tryPileNr >= 6 && (bottommostCard && (card.value === bottommostCard.value - 1) && card.blackType != bottommostCard.blackType)))) continue;
+        console.log('Match gevonden');
 
-              // turn around next (most lowest) card of that pile.
-              const nextCard = this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1];
-              console.log(this.piles[pileNr].cards.length);
-              console.log(nextCard);
-              if (nextCard && !nextCard.turned) {
-                  nextCard.turning = true;
-                  const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + nextCard.id);
-                  flipCardElement.animate([{transform: 'rotateY(180deg) '}, {transform: 'rotateY(0deg) '}], {duration: 500});
-                  setTimeout(() => {
-                      nextCard.turned = true;
-                      nextCard.turning = false;
-                  }, 490);
-              }
-          }, 500);
-          searching = false;
-      }
+        const pileElement = this.elementRef.nativeElement.querySelector('#pile-' + tryPileNr);
+
+        const numberInPile:number = this.piles[pileNr].cards.indexOf(card);
+        const cards:Card[] = [];
+        let offset = 0;
+        for (let movingCardId = numberInPile; movingCardId < this.piles[pileNr].cards.length; movingCardId++) {
+            const c:Card = this.piles[pileNr].cards[movingCardId];
+            cards.push(c);
+            const cardElement = this.elementRef.nativeElement.querySelector('#card-' + c.id);
+            const moveHorizontal:number = pileElement.offsetLeft - cardElement.getBoundingClientRect().left;
+            const moveVertical:number = pileElement.offsetTop + (tryPileNr > 4 ? this.piles[tryPileNr].cards.length * 50 + 50*offset++: 0) - cardElement.getBoundingClientRect().top;
+            cardElement.animate([{ transform: 'translate(' + moveHorizontal + 'px,' + moveVertical + 'px)'}], { duration: 200 });
+        }
+        setTimeout(() => {
+            for (let c of cards) {
+                this.piles[pileNr].cards.pop();
+                c.pileNr = tryPileNr;
+                this.piles[tryPileNr].cards.push(c);
+            }
+
+            // turn around next (most lowest) card of that pile.
+            const nextCard = this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1];
+            // console.log(this.piles[pileNr].cards.length);
+            // console.log(nextCard);
+            if (nextCard && !nextCard.turned) {
+                nextCard.turning = true;
+                const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + nextCard.id);
+                flipCardElement.animate([{transform: 'rotateY(180deg) '}, {transform: 'rotateY(0deg) '}], {duration: 200});
+                setTimeout(() => {
+                    nextCard.turned = true;
+                    nextCard.turning = false;
+                }, 190);
+            }
+        }, 190);
+        break;
     }
   }
 

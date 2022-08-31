@@ -1,15 +1,18 @@
-$body_height: 95vh;
 $body_width: 95vw;
+$body_height: 95vh;
+
+$card_width: $body_width / 10;
+$card_height: $body_height / 5;
 
 body {
     background-color: #222244;
-    height: $body_height;
     width: $body_width;
+    height: $body_height;
 }
 
-div.page-area {
-    width: calc(#{$body_width});
-    height: calc(#{$body_height});
+div.piles-area {
+    display: -webkit-flex;
+    display: flex;
 }
 
 div.stack-area {
@@ -20,32 +23,26 @@ div.play-area {
     height: 60%;
 }
 
-div.piles-area {
-    display: -webkit-flex;
-    display: flex;
-}
-
 div.card-area {
-    width: calc(#{$body_width} / 9);
-    height: calc(#{$body_height} / 5);
-    margin: 1em 0.5em;
+    width: $card_width;
+    height: $card_height;
+    margin: 1em 2em 1em 1em;
     border-radius: 1em;
     background-color: #333355;
 }
 
-div.card {
-    position: absolute;
-    width: calc(#{$body_width} / 9 - 1em);
-    height: calc(#{$body_height} / 5 - 1em);
-    border-radius: 1em;
-    border: 0.6em double #6666AA;
-    background-color: #445566;
-}
-
 div.pile-cards {
     position: absolute;
-    width: calc(#{$body_width} / 9 - 1em);
-    height: calc(#{$body_height} / 5 - 1em);
+    width: $card_width;
+    height: $card_height;
+    perspective: 1000px;
+}
+
+div.pile-cards-A {
+//    position: absolute;
+//    margin-right: 1em;
+    width: $card_width;
+    height: $card_height;
     perspective: 1000px;
 }
 
@@ -56,20 +53,23 @@ div.card-envelope {
     transform-style: preserve-3d;
 }
 
+.play-card {
+    margin-top: 3em;
+}
 
 div.card-format {
     position: absolute;
     border: 0.3em double #6666AA;
     border-radius: 0.5em;
-    width: calc(#{$body_width} / 9 - 0.5em);
-    height: calc(#{$body_height} / 5 - 0.5em);
+    width: $card_width;
+    height: $card_height;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 
     text-align: center;
     font-size: 200%;
-    font-family: Bookman Old Style;
-    line-height: 80%;
+//    font-family: Bookman Old Style;
+    line-height: 110%;
     font-weight: bold;
     &.type-color {
         color: red;
