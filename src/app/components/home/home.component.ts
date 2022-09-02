@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
     cards:Card[] = [];
     spread:number[] = [];
     nr:number = 0;
+    gameEnded:boolean = false;
 
     piles:Pile[] = [];// new Array(13).fill({cards: []});
 
@@ -122,10 +123,10 @@ export class HomeComponent implements OnInit {
   }
 
 
-  cardClick(pileNr:number, card:Card) {
+  cardClick(pileNr:number, card:Card): boolean {
     console.log('clicked card = ', card);
     if (!card || !card.turned) {
-      return;
+      return false;
     }
 
     for (let tryPileNr of [0,1,2,3,6,7,8,9,10,11,12]) {
@@ -169,11 +170,17 @@ export class HomeComponent implements OnInit {
                 setTimeout(() => {
                     nextCard.turned = true;
                     nextCard.turning = false;
+
+                    // Has game ended?
+                    this.gameEnded = !this.piles.some(pile => !pile.cards.some(card => !card.turned));
+                    console.log('gameEnded ' + this.gameEnded);
+
                 }, 190);
             }
         }, 190);
-        break;
+        return true;
     }
+    return false;
   }
 
   turnCard(card:Card) {

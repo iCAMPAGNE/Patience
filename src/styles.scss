@@ -1,5 +1,5 @@
-$body_width: 95vw;
-$body_height: 95vh;
+$body_width: 90vw;
+$body_height: 90vh;
 
 $card_width: $body_width / 10;
 $card_height: $body_height / 5;
@@ -94,15 +94,18 @@ div.card-format {
     &.back {
         background-color: #445566;
         &.turning, &.turned {
-            transform: rotateY(180deg);
+            display: none;
+//            transform: rotateY(180deg);
         }
     }
 
     &.front {
+        display: none;
         background-color: #DDDDFF;
-        transform: rotateY(180deg);
+//        transform: rotateY(180deg);
         &.turning, &.turned {
-            transform: rotateY(0deg);
+            display: inherit;
+//            transform: rotateY(0deg);
         }
     }
 }

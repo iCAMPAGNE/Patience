@@ -36,17 +36,25 @@
 
     <div id="play-area" class="piles-area play-area">
         <div *ngFor="let pileNr of [6,7,8,9,10,11,12]">
-            <div id="pile-{{pileNr}}" class="card-area pile-cards-A" style="margin-right: 2em;">
+            <div id="pile-{{pileNr}}" class="card-area pile-cards-A">
                 <div *ngFor="let card of piles[pileNr].cards; let i = index;">
-                    <div id="card-{{card.id}}" class="card-envelope play-card" (click)="cardClick(pileNr, card)">
-                        <div class="card-format front" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'type-color':!card.blackType}">
-                            {{card.valueSymbol}} {{card.type}}
-                        </div>
-                        <div class="card-format back" [ngClass]="{'turning':card.turning, 'turned':card.turned}"></div>
+                    <div id="card-{{card.id}}" class="card-format front play-card"  style="margin-top: {{i*1.5}}em;"
+                            [ngClass]="{'turned':card.turned, 'type-color':!card.blackType}"
+                            (click)="cardClick(pileNr, card)">
+                        {{card.valueSymbol}} {{card.type}}
                     </div>
+                    <div class="card-format card-envelope play-card back" [ngClass]="{'turned':card.turned}" style="margin-top: {{i*1.5}}em;"></div>
+                    <!--<div id="card-{{card.id}}" class="card-envelope play-card" (click)="cardClick(pileNr, card)">-->
+                        <!--<div class="card-format front" [ngClass]="{'turning':card.turning, 'turned':card.turned, 'type-color':!card.blackType}">-->
+                            <!--{{card.valueSymbol}} {{card.type}}-->
+                        <!--</div>-->
+                        <!--<div class="card-format back" [ngClass]="{'turning':card.turning, 'turned':card.turned}"></div>-->
+                    <!--</div>-->
                 </div>
             </div>
         </div>
     </div>
+
+    <button *ngIf="gameEnded">GAME ENDED</button>
 </div>
 
