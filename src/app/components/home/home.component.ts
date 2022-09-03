@@ -3,7 +3,6 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 interface Card {
     id:number;
     value:number;
-    valueSymbol:string;
     imageUrl:string;
     type:string;
     blackType:boolean;
@@ -13,8 +12,6 @@ interface Card {
 }
 interface Pile {
     cards:Card[];
-}
-interface position {
 }
 
 @Component({
@@ -38,38 +35,30 @@ export class HomeComponent implements OnInit {
       this.piles.push({cards: []});
     }
 
-//      ['♧', '♦', '♤', '♥'].forEach((type:string) => {
       ['clubs', 'diamonds', 'spades', 'hearts'].forEach((type:string) => {
           for (let value = 1; value <= 13; value++) {
               const blackType:boolean = ['clubs', 'spades'].indexOf(type) >= 0;
-              let valueSymbol:string = '';
               let imageUrl = 'assets/img/';
               switch (value) {
                   case 1:
-                      valueSymbol = 'A';
                       imageUrl += 'ace_of_' + type;
                       break;
                   case 11:
-                      valueSymbol = 'J';
                       imageUrl += 'jack_of_' + type;
-//				icon = card.type % 2 === 0 ? 'url(images/jack-black.png)' : 'url(images/jack-red.png)';
                       break;
                   case 12:
-                      valueSymbol = 'Q';
                       imageUrl += 'queen_of_' + type;
                       break;
                   case 13:
-                      valueSymbol = 'K';
                       imageUrl += 'king_of_' + type;
                       break;
                   default:
-                      valueSymbol = value.toLocaleString();
                       imageUrl += value.toLocaleString() + '_of_' + type;
               }
               imageUrl += '.png';
 
               const id = this.nr++;
-              this.cards.push({id: id, value: value, valueSymbol: valueSymbol, imageUrl: imageUrl, type: type, blackType: blackType, pileNr: 5, turning: false, turned: false});
+              this.cards.push({id: id, value: value, imageUrl: imageUrl, type: type, blackType: blackType, pileNr: 5, turning: false, turned: false});
               this.spread.push(this.cards.length - 1);
           }
       });
@@ -112,7 +101,6 @@ export class HomeComponent implements OnInit {
 
   rechargePile(pileNr:number) {
       if (this.piles[pileNr].cards.find(c => c.turning)) return;
-      console.log('rechargePile');
       if (this.piles[4].cards.length > 0) {
           const card = this.piles[4].cards[this.piles[4].cards.length - 1];
           if (card) {
@@ -133,7 +121,6 @@ export class HomeComponent implements OnInit {
 
 
   cardClick(pileNr:number, card:Card): boolean {
-    console.log('clicked card = ', card);
     if (!card || !card.turned) {
       return false;
     }
@@ -146,7 +133,6 @@ export class HomeComponent implements OnInit {
                 (bottommostCard && card.value === bottommostCard.value + 1 && card.type === bottommostCard.type && card.id === this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1].id) ))
               || (tryPileNr >= 6 && !bottommostCard && card.value === 13)
               || (tryPileNr >= 6 && (bottommostCard && (card.value === bottommostCard.value - 1) && card.blackType != bottommostCard.blackType)))) continue;
-        console.log('Match gevonden');
 
         const pileElement = this.elementRef.nativeElement.querySelector('#pile-' + tryPileNr);
 
@@ -170,8 +156,6 @@ export class HomeComponent implements OnInit {
 
             // turn around next (most lowest) card of that pile.
             const nextCard = this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1];
-            // console.log(this.piles[pileNr].cards.length);
-            // console.log(nextCard);
             if (nextCard && !nextCard.turned) {
                 nextCard.turning = true;
                 const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + nextCard.id);
@@ -181,7 +165,7 @@ export class HomeComponent implements OnInit {
                     nextCard.turning = false;
 
                     // Has game ended?
-                    this.gameEnded = !this.piles.some((pile, index) => index >= 6 && !pile.cards.some(card => !card.turned));
+                    this.gameEnded = !this.piles.some((pile, index) => index >= 6 && pile.cards.some(card => !card.turned));
                     console.log('gameEnded ' + this.gameEnded);
 
                 }, 190);
@@ -191,70 +175,4 @@ export class HomeComponent implements OnInit {
     }
     return false;
   }
-
-  turnCard(card:Card) {
-
-      const cardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
-      console.log(cardElement.offsetLeft);
-      cardElement.animate([{ transform: 'rotateY(0deg) ' } ], { duration: 400 });
-      setTimeout(() => {
-          card.turned = true;
-      }, 400);
-//      cardElement.animate([{ transform: 'rotateY(179.9deg)' } ], { duration: 4000 });
-      // setTimeout(() => {
-      //     card.turned = true;
-      //     cardElement.animate([{ transform: 'translateX(-300px)' } ], { duration: 800 });
-      //     setTimeout(() => {
-      //         this.piles[5].cards.pop();
-      //         this.piles[4].cards.push(card);
-      //     }, 400);
-      // }, 200);
-      // setTimeout(() => {
-      //
-      //     setTimeout(() => {
-      //         this.piles[5].cards.pop();
-      //         this.piles[4].cards.push(card);
-      //     }, 400);
-      // });
-  }
-/*
-    createCard(card:Card, pile:Pile, position:position) {
-        card.pile = pile;
-        card.position = position;
-//        var cardElement = $('<div>').attr('id', card.id).addClass('card');
-//        var innerCard = $('<div>').addClass('inner-card').css('color', card.type % 2 === 0 ? 'black' : 'red');
-//        cardElement.removeClass(card.turned ? 'back' : 'front').addClass(card.turned ? 'front' : 'back');
-        var cardTypes = ['♧', '♦', '♤', '♥'];
-        var value = null;
-        var icon = null
-        switch (card.value) {
-            case 1:
-                value = 'A';
-                break;
-            case 11:
-                value = 'J';
-//				icon = card.type % 2 === 0 ? 'url(images/jack-black.png)' : 'url(images/jack-red.png)';
-                break;
-            case 12:
-                value = 'Q';
-                break;
-            case 13:
-                value = 'K';
-                break;
-            default:
-                value = card.value;
-        }
-//        innerCard.append('<div class="card-text">' + value + ' ' + cardTypes[card.type] + '</div>');
-        if (icon) {
-//            const backgroundDiv = $('<div>').addClass('card-icon').css('background-image', icon);
-//            innerCard.append(backgroundDiv);
-        }
-  //      cardElement.append(innerCard);
-  //      cardElement.click(function () {
-  //          cardClick(card);
-  //      });
-
-        return null;// cardElement;
-    }
-*/
 }

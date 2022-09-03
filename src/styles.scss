@@ -1,5 +1,5 @@
-$available_width: 70vw;
-$available_height: 70vh;
+$available_width: 100vw;
+$available_height: 100vh;
 
 $body_width: $available_width;
 $body_height: $available_height;
@@ -58,25 +58,16 @@ div.card-envelope {
 
 .card-format {
     position: absolute;
-//    border: 0.3em double #6666AA;
-//    border-radius: 0.5em;
     width: $card_width;
     height: $card_height;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 
-    text-align: center;
-    font-size: 200%;
-//    font-family: Bookman Old Style;
-    line-height: 110%;
-    font-weight: bold;
-    &.type-color {
-        color: red;
-    }
-
-
     &.back-4 {
-        background-color: #DDDDFF;
+        background-color: #445566;
+        border: $card_width / 100 double #8888AA;
+        border-radius: 5%;
+        width: $card_width / 1.02;
         transform: rotateY(180deg);
         &.turning {
             transform: rotateY(0deg);
@@ -84,7 +75,6 @@ div.card-envelope {
     }
 
     &.front-4 {
-        background-color: #DDDDFF;
         &.turning {
             transform: rotateY(180deg);
         }
@@ -92,19 +82,15 @@ div.card-envelope {
 
     &.back-5 {
         background-color: #445566;
-        border: 0.1em double #8888AA;
-        border-radius: 0.2em;
-        width: 94%;
-        height: 94%;
-        margin-left: 0.5%;
-        transform: rotateY(0deg);
+        border: $card_width / 100 double #8888AA;
+        border-radius: 5%;
+        width: $card_width / 1.02;
         &.turning {
             transform: rotateY(180deg);
         }
     }
 
     &.front-5 {
-        background-color: #DDDDFF;
         transform: rotateY(180deg);
         &.turning {
             transform: rotateY(0deg);
@@ -113,11 +99,9 @@ div.card-envelope {
 
     &.back {
         background-color: #445566;
-        border: 0.1em double #8888AA;
-        border-radius: 0.2em;
-        width: 94%;
-        height: 94%;
-        margin-left: 0.5%;
+        border: $card_width / 100 double #8888AA;
+        border-radius: 5%;
+        width: $card_width / 1.02;
         &.turning, &.turned {
             display: none;
             transform: rotateY(180deg);
@@ -126,7 +110,6 @@ div.card-envelope {
 
     &.front {
         display: none;
-//        background-color: #DDDDFF;
         transform: rotateY(180deg);
         &.turning, &.turned {
             display: inherit;
