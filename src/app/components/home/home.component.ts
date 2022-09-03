@@ -4,6 +4,7 @@ interface Card {
     id:number;
     value:number;
     valueSymbol:string;
+    imageUrl:string;
     type:string;
     blackType:boolean;
     pileNr:number;
@@ -37,30 +38,38 @@ export class HomeComponent implements OnInit {
       this.piles.push({cards: []});
     }
 
-      ['♧', '♦', '♤', '♥'].forEach((type:string) => {
+//      ['♧', '♦', '♤', '♥'].forEach((type:string) => {
+      ['clubs', 'diamonds', 'spades', 'hearts'].forEach((type:string) => {
           for (let value = 1; value <= 13; value++) {
-              const blackType:boolean = ['♧', '♤'].indexOf(type) >= 0;
+              const blackType:boolean = ['clubs', 'spades'].indexOf(type) >= 0;
               let valueSymbol:string = '';
+              let imageUrl = 'assets/img/';
               switch (value) {
                   case 1:
                       valueSymbol = 'A';
+                      imageUrl += 'ace_of_' + type;
                       break;
                   case 11:
                       valueSymbol = 'J';
+                      imageUrl += 'jack_of_' + type;
 //				icon = card.type % 2 === 0 ? 'url(images/jack-black.png)' : 'url(images/jack-red.png)';
                       break;
                   case 12:
                       valueSymbol = 'Q';
+                      imageUrl += 'queen_of_' + type;
                       break;
                   case 13:
                       valueSymbol = 'K';
+                      imageUrl += 'king_of_' + type;
                       break;
                   default:
                       valueSymbol = value.toLocaleString();
+                      imageUrl += value.toLocaleString() + '_of_' + type;
               }
+              imageUrl += '.png';
 
               const id = this.nr++;
-              this.cards.push({id: id, value: value, valueSymbol: valueSymbol, type: type, blackType: blackType, pileNr: 5, turning: false, turned: false});
+              this.cards.push({id: id, value: value, valueSymbol: valueSymbol, imageUrl: imageUrl, type: type, blackType: blackType, pileNr: 5, turning: false, turned: false});
               this.spread.push(this.cards.length - 1);
           }
       });
@@ -91,14 +100,14 @@ export class HomeComponent implements OnInit {
       card.turning = true;
       event.stopPropagation(); // Prevent exectution empty stock-pile click
       const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
-      flipCardElement.animate([{ transform: 'rotateY(180deg) '}, { transform: 'translateX(-150px)' } ], { duration: 200 });
+      flipCardElement.animate([{ transform: 'rotateY(180deg) '}, { transform: 'translateX(-150px)' } ], { duration: 500 });
       setTimeout(() => {
           card.turned = true;
           this.piles[5].cards.pop();
           card.pileNr = 4;
           this.piles[4].cards.push(card);
           card.turning = false;
-      }, 190);
+      }, 490);
   }
 
   rechargePile(pileNr:number) {
@@ -134,7 +143,7 @@ export class HomeComponent implements OnInit {
         const bottommostCard:Card = this.piles[tryPileNr].cards[this.piles[tryPileNr].cards.length - 1];
         console.log('candidate');
         if (!((tryPileNr < 4 && ((card.value === 1 && !bottommostCard) ||
-                (bottommostCard && card.value === bottommostCard.value + 1 && card.type === bottommostCard.type) ))
+                (bottommostCard && card.value === bottommostCard.value + 1 && card.type === bottommostCard.type && card.id === this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1].id) ))
               || (tryPileNr >= 6 && !bottommostCard && card.value === 13)
               || (tryPileNr >= 6 && (bottommostCard && (card.value === bottommostCard.value - 1) && card.blackType != bottommostCard.blackType)))) continue;
         console.log('Match gevonden');
@@ -149,7 +158,7 @@ export class HomeComponent implements OnInit {
             cards.push(c);
             const cardElement = this.elementRef.nativeElement.querySelector('#card-' + c.id);
             const moveHorizontal:number = pileElement.offsetLeft - cardElement.getBoundingClientRect().left;
-            const moveVertical:number = pileElement.offsetTop + (tryPileNr > 4 ? this.piles[tryPileNr].cards.length * 50 + 50*offset++: 0) - cardElement.getBoundingClientRect().top;
+            const moveVertical:number = pileElement.offsetTop + (tryPileNr > 4 ? this.piles[tryPileNr].cards.length * 40 + 40*offset++: 0) - cardElement.getBoundingClientRect().top;
             cardElement.animate([{ transform: 'translate(' + moveHorizontal + 'px,' + moveVertical + 'px)'}], { duration: 200 });
         }
         setTimeout(() => {
@@ -172,7 +181,7 @@ export class HomeComponent implements OnInit {
                     nextCard.turning = false;
 
                     // Has game ended?
-                    this.gameEnded = !this.piles.some(pile => !pile.cards.some(card => !card.turned));
+                    this.gameEnded = !this.piles.some((pile, index) => index >= 6 && !pile.cards.some(card => !card.turned));
                     console.log('gameEnded ' + this.gameEnded);
 
                 }, 190);

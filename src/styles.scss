@@ -1,5 +1,8 @@
-$body_width: 90vw;
-$body_height: 90vh;
+$available_width: 70vw;
+$available_height: 70vh;
+
+$body_width: $available_width;
+$body_height: $available_height;
 
 $card_width: $body_width / 10;
 $card_height: $body_height / 5;
@@ -53,14 +56,10 @@ div.card-envelope {
     transform-style: preserve-3d;
 }
 
-.play-card {
-    margin-top: 3em;
-}
-
-div.card-format {
+.card-format {
     position: absolute;
-    border: 0.3em double #6666AA;
-    border-radius: 0.5em;
+//    border: 0.3em double #6666AA;
+//    border-radius: 0.5em;
     width: $card_width;
     height: $card_height;
     -webkit-backface-visibility: hidden;
@@ -91,21 +90,47 @@ div.card-format {
         }
     }
 
+    &.back-5 {
+        background-color: #445566;
+        border: 0.1em double #8888AA;
+        border-radius: 0.2em;
+        width: 94%;
+        height: 94%;
+        margin-left: 0.5%;
+        transform: rotateY(0deg);
+        &.turning {
+            transform: rotateY(180deg);
+        }
+    }
+
+    &.front-5 {
+        background-color: #DDDDFF;
+        transform: rotateY(180deg);
+        &.turning {
+            transform: rotateY(0deg);
+        }
+    }
+
     &.back {
         background-color: #445566;
+        border: 0.1em double #8888AA;
+        border-radius: 0.2em;
+        width: 94%;
+        height: 94%;
+        margin-left: 0.5%;
         &.turning, &.turned {
             display: none;
-//            transform: rotateY(180deg);
+            transform: rotateY(180deg);
         }
     }
 
     &.front {
         display: none;
-        background-color: #DDDDFF;
-//        transform: rotateY(180deg);
+//        background-color: #DDDDFF;
+        transform: rotateY(180deg);
         &.turning, &.turned {
             display: inherit;
-//            transform: rotateY(0deg);
+            transform: rotateY(0deg);
         }
     }
 }
