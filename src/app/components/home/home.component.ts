@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, HostListener} from '@angular/core';
 
 interface Card {
     id:number;
@@ -29,7 +29,19 @@ export class HomeComponent implements OnInit {
 
     piles:Pile[] = [];// new Array(13).fill({cards: []});
 
-  constructor(private elementRef: ElementRef) { }
+    screenHeight: any;
+    screenWidth: any;
+
+    @HostListener('window:resize', ['$event'])
+    getScreenSize() {
+        this.screenHeight = window.innerHeight;
+        this.screenWidth = window.innerWidth;
+        console.log(this.screenWidth, this.screenHeight);
+    }
+
+  constructor(private elementRef: ElementRef) {
+      this.getScreenSize();
+  }
 
   ngOnInit(): void {
     for (let p = 0; p < 13; p++) {
@@ -84,6 +96,21 @@ export class HomeComponent implements OnInit {
           card.turned = false;
           this.piles[5].cards.push(card);
       }
+
+      setTimeout(() => {
+          const pileElement = this.elementRef.nativeElement.querySelector('#pile-0');
+          console.log('pile-0 = ', pileElement.getBoundingClientRect().left + ' / ' + pileElement.getBoundingClientRect().top);
+          console.log('pile-0 = ', pileElement.offsetLeft + ' / ' + pileElement.offsetTop);
+          console.log('pile-1 = ', this.elementRef.nativeElement.querySelector('#pile-1').getBoundingClientRect().left + ' / ' + this.elementRef.nativeElement.querySelector('#pile-1').getBoundingClientRect().top +
+          '    ' + this.elementRef.nativeElement.querySelector('#pile-1').offsetLeft + ' / ' + this.elementRef.nativeElement.querySelector('#pile-1').offsetTop);
+          console.log('pile-6 = ', this.elementRef.nativeElement.querySelector('#pile-6').getBoundingClientRect().left + ' / ' + this.elementRef.nativeElement.querySelector('#pile-6').getBoundingClientRect().top);
+          const cardElement = this.elementRef.nativeElement.querySelector('#card-' +  this.piles[11].cards[5].id);
+          console.log('card 6 = ', cardElement.getBoundingClientRect().left + ' / ' + cardElement.getBoundingClientRect().top + '    ' + cardElement.offsetLeft + ' / ' + cardElement.offsetTop);
+          const cardElement2 = this.elementRef.nativeElement.querySelector('#card-' +  this.piles[12].cards[6].id);
+          console.log('card 7 = ', cardElement2.getBoundingClientRect().left + ' / ' + cardElement2.getBoundingClientRect().top + '    ' + cardElement2.offsetLeft + ' / ' + cardElement2.offsetTop);
+          // const cardBottomElement = this.elementRef.nativeElement.querySelector('#card-' +  this.piles[12].cards[6].id);
+          // console.log('card bottom = ', cardBottomElement.getBoundingClientRect().left + '/' + cardBottomElement.getBoundingClientRect().top);
+      })
   }
 
   draaiom(event: Event, card:Card) {
@@ -162,6 +189,7 @@ export class HomeComponent implements OnInit {
       return false;
     }
     card.searching = true;
+      const factor:number = 50* this.screenHeight / 1000;
 
     for (let tryPileNr of [0,1,2,3,6,7,8,9,10,11,12]) {
         console.log(pileNr + ': tryPileNr = ' + tryPileNr);
@@ -184,9 +212,23 @@ export class HomeComponent implements OnInit {
             cards.push(c);
             const pileElement = this.elementRef.nativeElement.querySelector('#pile-' + tryPileNr);
             const cardElement = this.elementRef.nativeElement.querySelector('#card-' + c.id);
-            const moveHorizontal:number = pileElement.offsetLeft - cardElement.getBoundingClientRect().left;
-            const moveVertical:number = pileElement.offsetTop + (tryPileNr > 4 ? this.piles[tryPileNr].cards.length * 50 + 50*offset++: 0) - cardElement.getBoundingClientRect().top + 5;
-            cardElement.animate([{ transform: 'translate(' + moveHorizontal/12 + 'vw,' + moveVertical/12 + 'vh)'}], { duration: 200 });
+            const moveHorizontal:number = pileElement.getBoundingClientRect().left - cardElement.getBoundingClientRect().left;
+
+            let moveVertical: number;
+            if (tryPileNr < 4) {
+                const pileElement = this.elementRef.nativeElement.querySelector('#pile-' + tryPileNr);
+                moveVertical = pileElement.getBoundingClientRect().top - cardElement.getBoundingClientRect().top;
+            } else {
+                if (this.piles[tryPileNr].cards.length === 0) {
+                    const pileElement = this.elementRef.nativeElement.querySelector('#pile-' + tryPileNr);
+                    moveVertical = pileElement.getBoundingClientRect().top + 45 * offset++ - cardElement.getBoundingClientRect().top;
+                } else {
+                    const bottomCardOfTryPileElement = this.elementRef.nativeElement.querySelector('#card-' + this.piles[tryPileNr].cards[this.piles[tryPileNr].cards.length - 1].id);
+                    moveVertical = bottomCardOfTryPileElement.getBoundingClientRect().top + factor + factor * offset++ - cardElement.getBoundingClientRect().top;
+                }
+            }
+            console.log(cardElement.getBoundingClientRect().top + ' ->  ' + pileElement.getBoundingClientRect().top +  '   = ' + moveVertical);
+            cardElement.animate([{ transform: 'translate(' + moveHorizontal/(this.screenWidth/100) + 'vw,' + moveVertical/(this.screenHeight/100) + 'vh)'}], { duration: 200 });
         }
         setTimeout(() => {
             console.log('moving card(s)');

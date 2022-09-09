@@ -1,5 +1,5 @@
-$available_width: 90vw;
-$available_height: 90vh;
+$available_width: 95vw;
+$available_height: 95vh;
 
 $body_width: $available_width;
 $body_height: $available_height;
@@ -8,7 +8,7 @@ $card_width: $body_width / 10;
 $card_height: $body_height / 5;
 
 body {
-    background-color: #222244;
+    background-color: #778877;
     width: $body_width;
     height: $body_height;
 }
@@ -31,7 +31,7 @@ div.card-area {
     height: $card_height;
     margin: 0.5vw 1vw 0.5vw 0.5vw;
     border-radius: 1em;
-    background-color: #333355;
+    background-color: #667766;
 }
 
 div.pile-cards {

@@ -33,9 +33,9 @@
         <div *ngFor="let pileNr of [6,7,8,9,10,11,12]">
             <div id="pile-{{pileNr}}" class="card-area pile-cards-A">
                 <div *ngFor="let card of piles[pileNr].cards; let i = index;">
-                    <img [src]="card.imageUrl" id="card-{{card.id}}" class="card-format front" style="margin-top: {{i*4.5}}vh;"
+                    <img [src]="card.imageUrl" id="card-{{card.id}}" class="card-format front" style="margin-top: {{i*5}}vh;"
                             [ngClass]="{'turned':card.turned}" (click)="cardClick(pileNr, card, false)"/>
-                    <div class="card-format back" [ngClass]="{'turned':card.turned}" style="margin-top: {{i*4.5}}vh;"></div>
+                    <div class="card-format back" [ngClass]="{'turned':card.turned}" style="margin-top: {{i*5}}vh;"></div>
                 </div>
             </div>
         </div>
