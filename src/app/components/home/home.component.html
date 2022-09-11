@@ -2,16 +2,13 @@
     <div id="piles" class="piles-area stack-area">
         <div *ngFor="let pileNr of [0,1,2,3]">
             <div id="pile-{{pileNr}}" class="card-area">
-                <div *ngFor="let card of piles[pileNr].cards;" class="pile-cards">
-                    <div id="card-{{card.id}}" class="card-envelope" (click)="cardClick(pileNr, card, false)">
-                        <img [src]="card.imageUrl" class="card-format front turned"/>
-                    </div>
-                </div>
+                <img *ngFor="let card of piles[pileNr].cards;" id="card-{{card.id}}" (click)="cardClick(pileNr, card, false)"
+                        [src]="card.imageUrl" class="card-format front turned" [ngClass]="{'moving':card.moving}"/>
             </div>
         </div>
         <div id="pile-99" class="card-area invisible"></div>
         <div id="pile-4" class="card-area">
-            <div *ngFor="let card of piles[4].cards;" class="pile-cards">
+            <div *ngFor="let card of piles[4].cards;" class="pile-cards" [ngClass]="{'moving':card.moving || card.turning}">
                 <div id="card-{{card.id}}" class="card-envelope" (click)="cardClick(4, card, false)">
                     <img [src]="card.imageUrl" class="card-format front-4" [ngClass]="{'turning':card.turning, 'turned':card.turned}"/>
                     <div class="card-format back-4" [ngClass]="{'turning':card.turning, 'turned':card.turned}"></div>
@@ -20,7 +17,7 @@
         </div>
         <div id="pile-5" class="card-area" (click)="rechargePile()">
             <div *ngFor="let card of piles[5].cards;" class="pile-cards">
-                <div id="card-{{card.id}}" class="card-envelope" (click)="draaiom($event, card)">
+                <div id="card-{{card.id}}" class="card-envelope" (click)="turnAround($event, card)">
                     <img [src]="card.imageUrl" class="card-format front-5"
                             [ngClass]="{'turning':card.turning, 'turned':card.turned}"/>
                     <div class="card-format back-5" [ngClass]="{'turning':card.turning, 'turned':card.turned}"></div>
@@ -30,13 +27,11 @@
     </div>
 
     <div id="play-area" class="piles-area play-area">
-        <div *ngFor="let pileNr of [6,7,8,9,10,11,12]">
-            <div id="pile-{{pileNr}}" class="card-area pile-cards-A">
-                <div *ngFor="let card of piles[pileNr].cards; let i = index;">
-                    <img [src]="card.imageUrl" id="card-{{card.id}}" class="card-format front" style="margin-top: {{i*5}}vh;"
-                            [ngClass]="{'turned':card.turned}" (click)="cardClick(pileNr, card, false)"/>
-                    <div class="card-format back" [ngClass]="{'turned':card.turned}" style="margin-top: {{i*5}}vh;"></div>
-                </div>
+        <div *ngFor="let pileNr of [6,7,8,9,10,11,12]" id="pile-{{pileNr}}" class="card-area">
+            <div *ngFor="let card of piles[pileNr].cards; let i = index;">
+                <img id="card-{{card.id}}" [src]="card.imageUrl" class="card-format front" style="margin-top: {{i*5}}vh;"
+                     [ngClass]="{'turned':card.turned, 'moving':card.moving}" (click)="cardClick(pileNr, card, false)"/>
+                <div class="card-format back" [ngClass]="{'turned':card.turned}" style="margin-top: {{i*5}}vh;"></div>
             </div>
         </div>
     </div>
