@@ -52,20 +52,6 @@ div.card-envelope {
     transform-style: preserve-3d;
 }
 
-div.pile-cards4 {
-    position: absolute;
-    width: $card_width;
-    height: $card_height;
-    perspective: 1000px;
-}
-
-div.card-envelope4 {
-    width: $card_width;
-    height: $card_height;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-}
-
 .card-format {
     position: absolute;
     width: $card_width;
@@ -143,33 +129,11 @@ div.game-over {
         width: 70%;
         height: 100%;
         border-radius: 1em;
+        cursor: pointer;
         text-align: center;
         align-self: center;
         background-color: #b5d592;
         font-weight: bold;
         font-size: large;
     }
-}
-
-
-.card-icon {
-    height: 60%;
-    margin: 0.2em;
-    background-size: 100%;
-    background-repeat: no-repeat;
-}
-
-div.card-area.invisible {
-    background-color: inherit;
-}
-
-input.message-button {
-    margin: 2em 0 0 5em;;
-    padding: 1em;
-    border-radius: 1em;
-    background-color: lime;
-    color:green;
-    font-weight: bold;
-    font-size: x-large;
-    cursor: pointer;
 }
