@@ -178,7 +178,7 @@ export class HomeComponent implements OnInit {
             return false;
         }
         card.searching = true;
-        const factor: number = 50 * this.screenHeight / 1000;
+        const offsetPerCard: number = 5 * this.screenHeight / 100;
 
         for (let tryPileNr of [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12]) {
             if (tryPileNr === pileNr) continue;
@@ -191,7 +191,7 @@ export class HomeComponent implements OnInit {
 
             const numberInPile: number = this.piles[pileNr].cards.indexOf(card);
             const cards: Card[] = [];
-            let offset = 0;
+            let numberOfCardsToBeMoved = 0;
             for (let movingCardId = numberInPile; movingCardId < this.piles[pileNr].cards.length; movingCardId++) {
                 const c: Card = this.piles[pileNr].cards[movingCardId];
                 c.moving = true;
@@ -207,13 +207,13 @@ export class HomeComponent implements OnInit {
                 } else {
                     if (this.piles[tryPileNr].cards.length === 0) {
                         const pileElement = this.elementRef.nativeElement.querySelector('#pile-' + tryPileNr);
-                        moveVertical = pileElement.getBoundingClientRect().top + 45 * offset++ - cardElement.getBoundingClientRect().top;
+                        moveVertical = pileElement.getBoundingClientRect().top + offsetPerCard * numberOfCardsToBeMoved++ - cardElement.getBoundingClientRect().top;
                     } else {
                         const bottomCardOfTryPileElement = this.elementRef.nativeElement.querySelector('#card-' + this.piles[tryPileNr].cards[this.piles[tryPileNr].cards.length - 1].id);
-                        moveVertical = bottomCardOfTryPileElement.getBoundingClientRect().top + factor + factor * offset++ - cardElement.getBoundingClientRect().top;
+                        moveVertical = bottomCardOfTryPileElement.getBoundingClientRect().top + offsetPerCard + offsetPerCard * numberOfCardsToBeMoved++ - cardElement.getBoundingClientRect().top;
                     }
                 }
-                cardElement.animate([{transform: 'translate(' + moveHorizontal / (this.screenWidth / 105) + 'vw,' + moveVertical / (this.screenHeight / 105) + 'vh)'}], {duration: 400});
+                cardElement.animate([{transform: 'translate(' + moveHorizontal / (this.screenWidth / 105) + 'vw,' + moveVertical / (this.screenHeight / 105) + 'vh)'}], {duration: 200});
             }
             setTimeout(() => {
                 for (let c of cards) {
@@ -239,7 +239,7 @@ export class HomeComponent implements OnInit {
                     card.searching = false;
                     this.checkGameStatus();
                 }
-            }, 380);
+            }, 150);
             return true;
         }
         card.searching = false;
