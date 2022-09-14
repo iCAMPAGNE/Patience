@@ -192,6 +192,7 @@ export class HomeComponent implements OnInit {
             const numberInPile: number = this.piles[pileNr].cards.indexOf(card);
             const cards: Card[] = [];
             let numberOfCardsToBeMoved = 0;
+            let duration = 0;
             for (let movingCardId = numberInPile; movingCardId < this.piles[pileNr].cards.length; movingCardId++) {
                 const c: Card = this.piles[pileNr].cards[movingCardId];
                 c.moving = true;
@@ -213,7 +214,8 @@ export class HomeComponent implements OnInit {
                         moveVertical = bottomCardOfTryPileElement.getBoundingClientRect().top + offsetPerCard + offsetPerCard * numberOfCardsToBeMoved++ - cardElement.getBoundingClientRect().top;
                     }
                 }
-                cardElement.animate([{transform: 'translate(' + moveHorizontal / (this.screenWidth / 105) + 'vw,' + moveVertical / (this.screenHeight / 105) + 'vh)'}], {duration: 200});
+                duration = Math.sqrt(Math.pow(moveHorizontal,2) + Math.pow(moveVertical, 2)) / 2;
+                cardElement.animate([{transform: 'translate(' + moveHorizontal / (this.screenWidth / 105) + 'vw,' + moveVertical / (this.screenHeight / 105) + 'vh)'}], {duration: duration});
             }
             setTimeout(() => {
                 for (let c of cards) {
@@ -239,7 +241,7 @@ export class HomeComponent implements OnInit {
                     card.searching = false;
                     this.checkGameStatus();
                 }
-            }, 150);
+            }, duration / 1.05);
             return true;
         }
         card.searching = false;
