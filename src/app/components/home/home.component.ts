@@ -116,7 +116,7 @@ export class HomeComponent implements OnInit {
         card.turning = true;
         event.stopPropagation(); // Prevent exectution empty stock-pile click
         const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
-        flipCardElement.animate([{transform: 'rotateY(180deg) '}, {transform: 'translateX(-10vw)'}], {duration: 200});
+        flipCardElement.animate([{transform: 'rotateY(180deg)'}, {transform: 'translateX(-11vw)'}], {duration: 500});
         setTimeout(() => {
             card.turned = true;
             this.piles[5].cards.pop();
@@ -124,7 +124,7 @@ export class HomeComponent implements OnInit {
             this.piles[4].cards.push(card);
             card.turning = false;
             card.searching = false;
-        }, 190);
+        }, 485);
     }
 
     _turnAround() {

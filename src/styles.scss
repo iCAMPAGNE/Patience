@@ -88,6 +88,8 @@ div.card-envelope {
         width: $card_width / 1.02;
         &.turning {
             transform: rotateY(180deg);
+            background-color: #667788;
+            transition: background-color 0.3s;
         }
     }
 
