@@ -22,7 +22,7 @@
     "@angular/router": "~11.0.5",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
-    "moment": "2.22.2",
+    "moment": "2.29.4",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
