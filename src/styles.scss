@@ -24,6 +24,11 @@ div.stack-area {
 
 div.play-area {
     height: 60%;
+
+    .turning-animation {
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
 }
 
 div.card-area {
@@ -105,16 +110,17 @@ div.card-envelope {
         border: $card_width / 100 double #8888AA;
         border-radius: 5%;
         width: $card_width / 1.02;
-        &.turning, &.turned {
-            display: none;
+        &.turning {
+            background-color: #667788;
+        }
+        &.turned {
             transform: rotateY(180deg);
         }
     }
 
     &.front {
-        display: none;
         transform: rotateY(180deg);
-        &.turning, &.turned {
+        &.turned {
             display: inherit;
             transform: rotateY(0deg);
         }

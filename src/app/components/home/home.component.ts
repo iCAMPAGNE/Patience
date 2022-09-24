@@ -116,15 +116,15 @@ export class HomeComponent implements OnInit {
         card.turning = true;
         event.stopPropagation(); // Prevent exectution empty stock-pile click
         const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
-        flipCardElement.animate([{transform: 'rotateY(180deg)'}, {transform: 'translateX(-11vw)'}], {duration: 500});
+        flipCardElement.animate([{transform: 'rotateY(180deg)'}, {transform: 'translateX(-11vw)'}], {duration: 300});
         setTimeout(() => {
             card.turned = true;
             this.piles[5].cards.pop();
-            card.pileNr = 4;
             this.piles[4].cards.push(card);
+            card.pileNr = 4;
             card.turning = false;
             card.searching = false;
-        }, 485);
+        }, 280);
     }
 
     _turnAround() {
@@ -198,7 +198,7 @@ export class HomeComponent implements OnInit {
                 c.moving = true;
                 cards.push(c);
                 const pileElement = this.elementRef.nativeElement.querySelector('#pile-' + tryPileNr);
-                const cardElement = this.elementRef.nativeElement.querySelector('#card-' + c.id);
+                const cardElement = this.elementRef.nativeElement.querySelector('#card-' + c.id );
                 const moveHorizontal: number = pileElement.getBoundingClientRect().left - cardElement.getBoundingClientRect().left;
 
                 let moveVertical: number;
@@ -215,9 +215,10 @@ export class HomeComponent implements OnInit {
                     }
                 }
                 duration = Math.sqrt(Math.pow(moveHorizontal,2) + Math.pow(moveVertical, 2)) / 2;
-                cardElement.animate([{transform: 'translate(' + moveHorizontal / (this.screenWidth / 105) + 'vw,' + moveVertical / (this.screenHeight / 105) + 'vh)'}], {duration: duration});
+                cardElement.animate([{transform: 'translate(' + moveHorizontal / (this.screenWidth / 110) + 'vw,' + moveVertical / (this.screenHeight / 110) + 'vh)'}], {duration: duration});
             }
             setTimeout(() => {
+                // make the movement of the card(s) final.
                 for (let c of cards) {
                     this.piles[pileNr].cards.pop();
                     c.pileNr = tryPileNr;
@@ -225,23 +226,23 @@ export class HomeComponent implements OnInit {
                     this.piles[tryPileNr].cards.push(c);
                 }
 
-                // turn around next (most lowest) card of that pile.
+                // Turn around next (most lowest) card of that pile.
                 const nextCard = this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1];
                 if (nextCard && !nextCard.turned) {
                     nextCard.turning = true;
-                    const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + nextCard.id);
-                    flipCardElement.animate([{transform: 'rotateY(180deg) '}, {transform: 'rotateY(0deg) '}], {duration: 200});
+                    const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + nextCard.id + '-turning');
+                    flipCardElement.animate([{transform: 'rotateY(180deg) '}], {duration: 300});
                     setTimeout(() => {
                         nextCard.turned = true;
                         nextCard.turning = false;
                         card.searching = false;
                         this.checkGameStatus();
-                    }, 190);
+                    }, 295);
                 } else {
                     card.searching = false;
                     this.checkGameStatus();
                 }
-            }, duration / 1.05);
+            }, duration / 1.1);
             return true;
         }
         card.searching = false;
