@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit {
     cards: Card[] = [];
     spread: number[] = [];
     nr: number = 0;
+    recharchingPile: boolean = false;
     gameEnded: boolean = false;
 
     piles: Pile[] = [];// new Array(13).fill({cards: []});
@@ -142,30 +143,33 @@ export class HomeComponent implements OnInit {
     }
 
     rechargePile() {
-        if (this.piles.some(pile => pile.cards.some(card => card.searching))) return;
+        if (this.recharchingPile || this.piles.some(pile => pile.cards.some(card => card.searching))) return;
+        this.recharchingPile = true;
+        this._rechargePile();
+    }
+
+    _rechargePile() {
         if (this.piles[5].cards.find(c => c.turning)) {
             this.checkGameStatus();
+            this.recharchingPile = false;
             return;
         }
         if (this.piles[4].cards.length > 0) {
             const card = this.piles[4].cards[this.piles[4].cards.length - 1];
-            if (card) {
-                card.turned = false;
-                card.turning = true;
-                const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
-                flipCardElement.animate([{transform: 'rotateY(-180deg)'}, {transform: 'translateX(10vw)'}], {duration: 100});
-                setTimeout(() => {
-                    card.turning = false;
-                    this.piles[4].cards.pop();
-                    card.pileNr = 5;
-                    this.piles[5].cards.push(card);
-                    this.rechargePile();
-                }, 95);
-            } else {
-                this.checkGameStatus();
-            }
+            card.turned = false;
+            card.turning = true;
+            const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
+            flipCardElement.animate([{transform: 'rotateY(-180deg)'}, {transform: 'translateX(10vw)'}], {duration: 100});
+            setTimeout(() => {
+                card.turning = false;
+                this.piles[4].cards.pop();
+                card.pileNr = 5;
+                this.piles[5].cards.push(card);
+                this._rechargePile();
+            }, 95);
         } else {
             this.checkGameStatus();
+            this.recharchingPile = false;
         }
     }
 
