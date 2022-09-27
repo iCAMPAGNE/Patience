@@ -1,11 +1,13 @@
+@use "sass:math";
+
 $available_width: 95vw;
 $available_height: 95vh;
 
 $body_width: $available_width;
 $body_height: $available_height;
 
-$card_width: $body_width / 10;
-$card_height: $body_height / 5;
+$card_width: math.div($body_width, 10);
+$card_height: math.div($body_height, 5);
 
 body {
     background-color: #778877;
@@ -71,9 +73,9 @@ div.card-envelope {
 
     &.back-4 {
         background-color: #445566;
-        border: $card_width / 100 double #8888AA;
+        border: math.div($card_width, 100) double #8888AA;
         border-radius: 5%;
-        width: $card_width / 1.02;
+        width: math.div($card_width, 1.02);
         transform: rotateY(180deg);
         &.turning {
             transform: rotateY(0deg);
@@ -88,9 +90,9 @@ div.card-envelope {
 
     &.back-5 {
         background-color: #445566;
-        border: $card_width / 100 double #8888AA;
+        border: math.div($card-width, 100) double #8888AA;
         border-radius: 5%;
-        width: $card_width / 1.02;
+        width: math.div($card_width, 1.02);
         &.turning {
             transform: rotateY(180deg);
             background-color: #667788;
@@ -107,9 +109,9 @@ div.card-envelope {
 
     &.back {
         background-color: #445566;
-        border: $card_width / 100 double #8888AA;
+        border: math.div($card_width, 100) double #8888AA;
         border-radius: 5%;
-        width: $card_width / 1.02;
+        width: math.div($card_width, 1.02);
         &.turning {
             background-color: #667788;
         }
