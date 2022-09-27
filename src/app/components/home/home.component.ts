@@ -5,7 +5,7 @@ interface Card {
     value: number;
     imageUrl: string;
     type: string;
-    blackType: boolean;
+    clubOrSpade: boolean;
     pileNr: number;
     searching: boolean;
     turning: boolean;
@@ -19,15 +19,14 @@ interface Pile {
 
 @Component({
     selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss']
+    templateUrl: './home.component.html'
 })
 
 export class HomeComponent implements OnInit {
     cards: Card[] = [];
     spread: number[] = [];
     nr: number = 0;
-    recharchingPile: boolean = false;
+    rechargingPile: boolean = false;
     gameEnded: boolean = false;
 
     piles: Pile[] = [];// new Array(13).fill({cards: []});
@@ -36,13 +35,13 @@ export class HomeComponent implements OnInit {
     screenWidth: any;
 
     @HostListener('window:resize', ['$event'])
-    getScreenSize() {
+    _getScreenSize() {
         this.screenHeight = window.innerHeight;
         this.screenWidth = window.innerWidth;
     }
 
     constructor(private elementRef: ElementRef) {
-        this.getScreenSize();
+        this._getScreenSize();
     }
 
     ngOnInit(): void {
@@ -52,7 +51,7 @@ export class HomeComponent implements OnInit {
 
         ['clubs', 'diamonds', 'spades', 'hearts'].forEach((type: string) => {
             for (let value = 1; value <= 13; value++) {
-                const blackType: boolean = ['clubs', 'spades'].indexOf(type) >= 0;
+                const clubOrSpade: boolean = ['clubs', 'spades'].indexOf(type) >= 0;
                 let imageUrl = 'assets/img/';
                 switch (value) {
                     case 1:
@@ -78,7 +77,7 @@ export class HomeComponent implements OnInit {
                     value: value,
                     imageUrl: imageUrl,
                     type: type,
-                    blackType: blackType,
+                    clubOrSpade: clubOrSpade,
                     pileNr: 5,
                     searching: false,
                     turning: false,
@@ -128,7 +127,7 @@ export class HomeComponent implements OnInit {
         }, 280);
     }
 
-    _turnAround() {
+    private _turnAround() {
         const card: Card = this.piles[5].cards[this.piles[5].cards.length - 1];
         if (this.piles.some(pile => pile.cards.some(card => card.searching))) return;
         card.searching = true;
@@ -139,19 +138,19 @@ export class HomeComponent implements OnInit {
         this.piles[4].cards.push(card);
         card.turning = false;
         card.searching = false;
-        this.checkGameStatus();
+        this._checkGameStatus();
     }
 
     rechargePile() {
-        if (this.recharchingPile || this.piles.some(pile => pile.cards.some(card => card.searching))) return;
-        this.recharchingPile = true;
+        if (this.rechargingPile || this.piles.some(pile => pile.cards.some(card => card.searching))) return;
+        this.rechargingPile = true;
         this._rechargePile();
     }
 
-    _rechargePile() {
+    private _rechargePile() {
         if (this.piles[5].cards.find(c => c.turning)) {
-            this.checkGameStatus();
-            this.recharchingPile = false;
+            this._checkGameStatus();
+            this.rechargingPile = false;
             return;
         }
         if (this.piles[4].cards.length > 0) {
@@ -168,8 +167,8 @@ export class HomeComponent implements OnInit {
                 this._rechargePile();
             }, 95);
         } else {
-            this.checkGameStatus();
-            this.recharchingPile = false;
+            this._checkGameStatus();
+            this.rechargingPile = false;
         }
     }
 
@@ -191,7 +190,7 @@ export class HomeComponent implements OnInit {
             if (!((tryPileNr < 4 && ((card.value === 1 && !bottommostCard) ||
                     (bottommostCard && card.value === bottommostCard.value + 1 && card.type === bottommostCard.type && card.id === this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1].id) ))
                     || (tryPileNr >= 6 && !bottommostCard && card.value === 13)
-                    || (tryPileNr >= 6 && (bottommostCard && (card.value === bottommostCard.value - 1) && card.blackType != bottommostCard.blackType)))) continue;
+                    || (tryPileNr >= 6 && (bottommostCard && (card.value === bottommostCard.value - 1) && card.clubOrSpade != bottommostCard.clubOrSpade)))) continue;
 
             const numberInPile: number = this.piles[pileNr].cards.indexOf(card);
             const cards: Card[] = [];
@@ -240,11 +239,11 @@ export class HomeComponent implements OnInit {
                         nextCard.turned = true;
                         nextCard.turning = false;
                         card.searching = false;
-                        this.checkGameStatus();
+                        this._checkGameStatus();
                     }, 295);
                 } else {
                     card.searching = false;
-                    this.checkGameStatus();
+                    this._checkGameStatus();
                 }
             }, duration / 1.1);
             return true;
@@ -253,7 +252,7 @@ export class HomeComponent implements OnInit {
         return false;
     }
 
-    checkGameStatus() {
+    private _checkGameStatus() {
 
         // Has game ended?
         setTimeout(() => {
@@ -264,7 +263,7 @@ export class HomeComponent implements OnInit {
                         nextPileNr = nextPileNr === 12 ? 4 : nextPileNr + 1;
                         if (nextPileNr === 5) {
                             if (this.piles[5].cards.length === 0) {
-                                this.rechargePile();
+                                this._rechargePile();
                             } else {
                                 this._turnAround();
                             }
