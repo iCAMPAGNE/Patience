@@ -40,6 +40,10 @@
 </div>
 
 <div class="game-over">
-    <button *ngIf="gameEnded" (click)="startGame()">Joke heeft alweer gewonnen! Druk hier voor een nieuw spelletje.</button>
+    <button *ngIf="gameEnded" (click)="startGame()">
+        Alweer gewonnen Joke!<br>
+        Spelletjes gespeeld: {{gamesPlayed}} waarvan gewonnen: {{gamesWon}}<br>
+        Druk hier voor een nieuw spelletje.
+    </button>
 </div>
 

@@ -1,4 +1,5 @@
 import {Component, ElementRef, OnInit, HostListener} from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
 interface Card {
     id: number;
@@ -17,6 +18,9 @@ interface Pile {
     cards: Card[];
 }
 
+const GamesPlayedCookie:string = 'GamesPlayedCookie';
+const GamesWonCookie:string = 'GamesWonCookie';
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html'
@@ -34,13 +38,16 @@ export class HomeComponent implements OnInit {
     screenHeight: any;
     screenWidth: any;
 
+    gamesPlayed: number = 0;
+    gamesWon: number = 0;
+
     @HostListener('window:resize', ['$event'])
     _getScreenSize() {
         this.screenHeight = window.innerHeight;
         this.screenWidth = window.innerWidth;
     }
 
-    constructor(private elementRef: ElementRef) {
+    constructor(private elementRef: ElementRef, private cookieService: CookieService) {
         this._getScreenSize();
     }
 
@@ -108,6 +115,13 @@ export class HomeComponent implements OnInit {
             card.turned = false;
             this.piles[5].cards.push(card);
         }
+
+        // Read and increase number of played games using cookies.
+        const gamesPlayedCookie = this.cookieService.get(GamesPlayedCookie);
+        if (gamesPlayedCookie) {
+            this.gamesPlayed = +gamesPlayedCookie;
+        }
+        this.cookieService.set(GamesPlayedCookie, '' + (++this.gamesPlayed).toString());
     }
 
     turnAround(event: Event, card: Card) {
@@ -271,6 +285,12 @@ export class HomeComponent implements OnInit {
                         }
                     }
                 } else {
+                    // Read and increase number of games won using cookies.
+                    const gamesWonCookie = this.cookieService.get(GamesWonCookie);
+                    if (gamesWonCookie) {
+                        this.gamesWon = +gamesWonCookie;
+                    }
+                    this.cookieService.set(GamesWonCookie, '' + (++this.gamesWon).toString());
                     this.gameEnded = true;
                 }
             }
