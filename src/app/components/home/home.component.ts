@@ -1,22 +1,5 @@
 import {Component, ElementRef, OnInit, HostListener} from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
-
-interface Card {
-    id: number;
-    value: number;
-    imageUrl: string;
-    type: string;
-    clubOrSpade: boolean;
-    pileNr: number;
-    searching: boolean;
-    turning: boolean;
-    turned: boolean;
-    moving: boolean;
-}
-
-interface Pile {
-    cards: Card[];
-}
+import { Card, Pile } from '../../models/model';
 
 const GamesPlayedCookie:string = 'GamesPlayedCookie';
 const GamesWonCookie:string = 'GamesWonCookie';
@@ -33,7 +16,7 @@ export class HomeComponent implements OnInit {
     rechargingPile: boolean = false;
     gameEnded: boolean = false;
 
-    piles: Pile[] = [];// new Array(13).fill({cards: []});
+    piles: Pile[] = [];
 
     screenHeight: any;
     screenWidth: any;
@@ -47,7 +30,7 @@ export class HomeComponent implements OnInit {
         this.screenWidth = window.innerWidth;
     }
 
-    constructor(private elementRef: ElementRef, private cookieService: CookieService) {
+    constructor(private elementRef: ElementRef) {
         this._getScreenSize();
     }
 
@@ -117,11 +100,16 @@ export class HomeComponent implements OnInit {
         }
 
         // Read and increase number of played games using cookies.
-        const gamesPlayedCookie = this.cookieService.get(GamesPlayedCookie);
-        if (gamesPlayedCookie) {
-            this.gamesPlayed = +gamesPlayedCookie;
+
+        if (typeof(Storage) !== "undefined") { // Check browser support
+            const gamesPlayedCookie = localStorage.getItem(GamesPlayedCookie);
+            if (gamesPlayedCookie) {
+                this.gamesPlayed = +gamesPlayedCookie;
+            }
+            localStorage.setItem(GamesPlayedCookie, '' + (++this.gamesPlayed).toString());
+        } else {
+            console.log("Sorry, your browser does not support Web Storage...");
         }
-        this.cookieService.set(GamesPlayedCookie, '' + (++this.gamesPlayed).toString());
     }
 
     turnAround(event: Event, card: Card) {
@@ -286,11 +274,16 @@ export class HomeComponent implements OnInit {
                     }
                 } else {
                     // Read and increase number of games won using cookies.
-                    const gamesWonCookie = this.cookieService.get(GamesWonCookie);
-                    if (gamesWonCookie) {
-                        this.gamesWon = +gamesWonCookie;
+
+                    if (typeof(Storage) !== "undefined") { // Check browser support
+                        const gamesWonCookie = localStorage.getItem(GamesWonCookie);
+                        if (gamesWonCookie) {
+                            this.gamesWon = +gamesWonCookie;
+                        }
+                        localStorage.setItem(GamesWonCookie, '' + (++this.gamesWon).toString());
+                    } else {
+                        console.log("Sorry, your browser does not support Web Storage...");
                     }
-                    this.cookieService.set(GamesWonCookie, '' + (++this.gamesWon).toString());
                     this.gameEnded = true;
                 }
             }
