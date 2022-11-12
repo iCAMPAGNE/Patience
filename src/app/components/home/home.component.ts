@@ -113,7 +113,7 @@ export class HomeComponent implements OnInit {
     }
 
     turnAround(event: Event, card: Card) {
-        if (this.piles.some(pile => pile.cards.some(card => card.searching))) return;
+        if (this.rechargingPile || this.piles.some(pile => pile.cards.some(card => card.searching))) return;
         card.searching = true;
         card.turning = true;
         event.stopPropagation(); // Prevent exectution empty stock-pile click
