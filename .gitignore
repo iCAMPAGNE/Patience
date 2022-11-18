@@ -9,6 +9,7 @@
 
 # dependencies
 /node_modules
+/node
 
 # profiling files
 chrome-profiler-events*.json
@@ -22,6 +23,7 @@ speed-measure-plugin*.json
 *.launch
 .settings/
 *.sublime-workspace
+**/*.iml
 
 # IDE - VSCode
 .vscode/*
@@ -40,7 +42,13 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+.angular
 
 # System Files
 .DS_Store
 Thumbs.db
+
+# Temp disabled
+.editorconfig
+e2e
+src/assets
