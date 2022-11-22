@@ -118,7 +118,10 @@ export class HomeComponent implements OnInit {
         card.turning = true;
         event.stopPropagation(); // Prevent exectution empty stock-pile click
         const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
-        flipCardElement.animate([{transform: 'rotateY(180deg)'}, {transform: 'translateX(-11vw)'}], {duration: 300});
+        const pile4Element = this.elementRef.nativeElement.querySelector('#pile-4');
+        const pile5Element = this.elementRef.nativeElement.querySelector('#pile-5');
+        const moveHorizontal: number = pile4Element.getBoundingClientRect().left - pile5Element.getBoundingClientRect().left;
+        flipCardElement.animate([{transform: 'rotateY(180deg)'}, {transform: 'translateX(' + moveHorizontal / (this.screenWidth / 100) + 'vw)'}], {duration: 300});
         setTimeout(() => {
             card.turned = true;
             this.piles[5].cards.pop();
@@ -220,7 +223,7 @@ export class HomeComponent implements OnInit {
                     }
                 }
                 duration = Math.sqrt(Math.pow(moveHorizontal,2) + Math.pow(moveVertical, 2)) / 2;
-                cardElement.animate([{transform: 'translate(' + moveHorizontal / (this.screenWidth / 110) + 'vw,' + moveVertical / (this.screenHeight / 110) + 'vh)'}], {duration: duration});
+                cardElement.animate([{transform: 'translate(' + moveHorizontal / (this.screenWidth / 100) + 'vw,' + moveVertical / (this.screenHeight / 100) + 'vh)'}], {duration: duration});
             }
             setTimeout(() => {
                 // make the movement of the card(s) final.

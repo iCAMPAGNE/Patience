@@ -1,18 +1,20 @@
-@use "sass:math";
-
-$available_width: 95vw;
 $available_height: 95vh;
+$available_width: 95vw;
 
-$body_width: $available_width;
-$body_height: $available_height;
+$body_height: min($available_height, $available_width / 1.1);
+$body_width: min($available_height * 1.1, $available_width);
 
-$card_width: math.div($body_width, 10);
-$card_height: math.div($body_height, 5);
+$card_height: calc($body_height / 5);
+$card_width: calc($card_height / 1.452);
+
+$back-card-margin: calc($card_height / 4);
+$card-border-radius: calc($card_height / 20);
+$card-area-margin: calc($card_height / 20);
 
 body {
     background-color: #778877;
-    width: $body_width;
     height: $body_height;
+    width: $body_width;
 }
 
 div.piles-area {
@@ -36,9 +38,13 @@ div.play-area {
 div.card-area {
     width: $card_width;
     height: $card_height;
-    margin: 0.5vw 1vw 0.5vw 0.5vw;
-    border-radius: 1em;
+    margin: $card-area-margin;
+    border-radius: $card-border-radius;
     background-color: #667766;
+
+    &.invisible {
+        background-color: inherit;
+    }
 }
 
 div.pile-cards {
@@ -59,6 +65,10 @@ div.card-envelope {
     transform-style: preserve-3d;
 }
 
+.back-card-margin {
+    margin-top: calc(var(--index) * $back-card-margin);
+}
+
 .card-format {
     position: absolute;
     width: $card_width;
@@ -71,28 +81,28 @@ div.card-envelope {
         z-index: 100;
     }
 
-    &.back-4 {
+    &.back-pile {
         background-color: #445566;
-        border: math.div($card_width, 100) double #8888AA;
-        border-radius: 5%;
-        width: math.div($card_width, 1.02);
+        border: calc($card_width / 100) double #8888AA;
+        border-radius: $card-border-radius;
+        width: calc($card_width / 1.02);
         transform: rotateY(180deg);
         &.turning {
             transform: rotateY(0deg);
         }
     }
 
-    &.front-4 {
+    &.front-pile {
         &.turning {
             transform: rotateY(180deg);
         }
     }
 
-    &.back-5 {
+    &.back-stock {
         background-color: #445566;
-        border: math.div($card-width, 100) double #8888AA;
-        border-radius: 5%;
-        width: math.div($card_width, 1.02);
+        border: calc($card-width / 100) double #8888AA;
+        border-radius: $card-border-radius;
+        width: calc($card_width / 1.02);
         &.turning {
             transform: rotateY(180deg);
             background-color: #667788;
@@ -100,7 +110,7 @@ div.card-envelope {
         }
     }
 
-    &.front-5 {
+    &.front-stock {
         transform: rotateY(180deg);
         &.turning {
             transform: rotateY(0deg);
@@ -109,9 +119,9 @@ div.card-envelope {
 
     &.back {
         background-color: #445566;
-        border: math.div($card_width, 100) double #8888AA;
-        border-radius: 5%;
-        width: math.div($card_width, 1.02);
+        border: calc($card_width / 100) double #8888AA;
+        border-radius: $card-border-radius;
+        width: calc($card_width / 1.02);
         &.turning {
             background-color: #667788;
         }
@@ -145,6 +155,6 @@ div.game-over {
         align-self: center;
         background-color: #b5d592;
         font-weight: bold;
-        font-size: large;
+        font-size: calc($card_width / 6);
     }
 }
