@@ -1,6 +1,6 @@
 {
   "name": "patience",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "engines": {
     "node": "16.17.1",
     "npm": "8.15.0"
