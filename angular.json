@@ -68,18 +68,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "patience:build"
+            "buildTarget": "patience:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "patience:build:production"
+              "buildTarget": "patience:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "patience:build"
+            "buildTarget": "patience:build"
           }
         },
         "test": {
