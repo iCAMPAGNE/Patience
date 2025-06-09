@@ -1,6 +1,6 @@
 {
   "name": "patience",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
@@ -12,22 +12,22 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^19.1.6",
-    "@angular/common": "^19.1.6",
-    "@angular/compiler": "^19.1.6",
-    "@angular/core": "^19.1.6",
-    "@angular/forms": "^19.1.6",
-    "@angular/platform-browser": "^19.1.6",
-    "@angular/platform-browser-dynamic": "^19.1.6",
-    "@angular/router": "^19.1.6",
+    "@angular/animations": "^20.0.2",
+    "@angular/common": "^20.0.2",
+    "@angular/compiler": "^20.0.2",
+    "@angular/core": "^20.0.2",
+    "@angular/forms": "^20.0.2",
+    "@angular/platform-browser": "^20.0.2",
+    "@angular/platform-browser-dynamic": "^20.0.2",
+    "@angular/router": "^20.0.2",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.0.1",
-    "@angular/cli": "~19.1.7",
-    "@angular/compiler-cli": "^19.1.6",
+    "@angular/cli": "~20.0.1",
+    "@angular/compiler-cli": "^20.0.2",
     "@types/jasmine": "~4.0.0",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
@@ -35,6 +35,6 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "typescript": "~5.7.3"
+    "typescript": "~5.8.3"
   }
 }
