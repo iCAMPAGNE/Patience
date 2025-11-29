@@ -1,17 +1,20 @@
-import {Component, ElementRef, OnInit, HostListener, AfterViewInit} from '@angular/core';
+import {Component, ElementRef, OnInit, HostListener, AfterViewInit, inject} from '@angular/core';
 import { Card, Pile } from '../../models/model';
+import {NgClass} from "@angular/common";
 
 const GamesPlayedCookie:string = 'GamesPlayedCookie';
 const GamesWonCookie:string = 'GamesWonCookie';
 
 @Component({
     selector: 'app-home',
-    templateUrl: './home.component.html',
-    standalone: false
+    imports: [
+        NgClass
+    ],
+    templateUrl: './home.component.html'
 })
 
 export class HomeComponent implements OnInit, AfterViewInit {
-    elRef!: any;
+    elRef!: HTMLElement;
     cards: Card[] = [];
     spread: number[] = [];
     nr: number = 0;
@@ -32,9 +35,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.screenWidth = window.innerWidth;
     }
 
-    constructor(private elementRef: ElementRef) {
+    constructor() {
         this._getScreenSize();
     }
+    private readonly elementRef = inject(ElementRef);
 
     ngOnInit(): void {
         for (let p = 0; p < 13; p++) {
@@ -122,13 +126,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
         card.searching = true;
         card.turning = true;
         event.stopPropagation(); // Prevent exectution empty stock-pile click
-        const flipCardElement = this.elRef.querySelector('#card-' + card.id);
-        const pile4Element = this.elRef.querySelector('#pile-4');
-        const pile5Element = this.elRef.querySelector('#pile-5');
+        const flipCardElement: HTMLElement = this.elRef.querySelector('#card-' + card.id)!;
+        const pile4Element: HTMLElement = this.elRef.querySelector('#pile-4')!;
+        const pile5Element: HTMLElement = this.elRef.querySelector('#pile-5')!;
         const moveHorizontal: number = pile4Element.getBoundingClientRect().left - pile5Element.getBoundingClientRect().left;
 
         flipCardElement.animate([{transform: 'rotateY(180deg)'}, {transform: 'translateX(' + moveHorizontal / (this.screenWidth / 100) + 'vw)'}], {duration: 300});
-        Promise.all(flipCardElement.getAnimations().map((animation:any) => animation.finished)).then(() => {
+        Promise.all(flipCardElement.getAnimations().map((animation:Animation) => animation.finished)).then(() => {
               card.turned = true;
               this.piles[5].cards.pop();
               this.piles[4].cards.push(card);
@@ -171,7 +175,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             card.turning = true;
             const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
             flipCardElement.animate([{transform: 'rotateY(-180deg)'}, {transform: 'translateX(10vw)'}], {duration: 100});
-            Promise.all(flipCardElement.getAnimations().map((animation:any) => animation.finished)).then(() => {
+            Promise.all(flipCardElement.getAnimations().map((animation:Animation) => animation.finished)).then(() => {
                 card.turning = false;
                 this.piles[4].cards.pop();
                 card.pileNr = 5;
@@ -195,7 +199,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         card.searching = true;
         const offsetPerCard: number = 5 * this.screenHeight / 100;
 
-        for (let tryPileNr of [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12]) {
+        for (const tryPileNr of [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12]) {
             if (tryPileNr === pileNr) continue;
             if (first4PilesOnly && tryPileNr > 3) continue;
             const bottommostCard: Card = this.piles[tryPileNr].cards[this.piles[tryPileNr].cards.length - 1];
@@ -211,29 +215,29 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 const c: Card = this.piles[pileNr].cards[movingCardId];
                 c.moving = true;
                 cards.push(c);
-                const pileElement = this.elRef.querySelector('#pile-' + tryPileNr);
-                const cardElement = this.elRef.querySelector('#card-' + c.id );
+                const pileElement = this.elRef.querySelector('#pile-' + tryPileNr)!;
+                const cardElement = this.elRef.querySelector('#card-' + c.id )!;
                 const moveHorizontal: number = pileElement.getBoundingClientRect().left - cardElement.getBoundingClientRect().left;
 
                 let moveVertical: number;
                 if (tryPileNr < 4) {
-                    const pileElement = this.elRef.querySelector('#pile-' + tryPileNr);
+                    const pileElement = this.elRef.querySelector('#pile-' + tryPileNr)!;
                     moveVertical = pileElement.getBoundingClientRect().top - cardElement.getBoundingClientRect().top;
                 } else {
                     if (this.piles[tryPileNr].cards.length === 0) {
-                        const pileElement = this.elRef.querySelector('#pile-' + tryPileNr);
+                        const pileElement = this.elRef.querySelector('#pile-' + tryPileNr)!;
                         moveVertical = pileElement.getBoundingClientRect().top + offsetPerCard * numberOfCardsToBeMoved++ - cardElement.getBoundingClientRect().top;
                     } else {
-                        const bottomCardOfTryPileElement = this.elRef.querySelector('#card-' + this.piles[tryPileNr].cards[this.piles[tryPileNr].cards.length - 1].id);
+                        const bottomCardOfTryPileElement = this.elRef.querySelector('#card-' + this.piles[tryPileNr].cards[this.piles[tryPileNr].cards.length - 1].id)!;
                         moveVertical = bottomCardOfTryPileElement.getBoundingClientRect().top + offsetPerCard + offsetPerCard * numberOfCardsToBeMoved++ - cardElement.getBoundingClientRect().top;
                     }
                 }
                 const duration = Math.sqrt(Math.pow(moveHorizontal,2) + Math.pow(moveVertical, 2)) / 2;
                 cardElement.animate([{transform: 'translate(' + moveHorizontal / (this.screenWidth / 100) + 'vw,' + moveVertical / (this.screenHeight / 100) + 'vh)'}], {duration: duration});
             }
-            Promise.all(document.getAnimations().map((animation:any) => animation.finished)).then(() => {
+            Promise.all(document.getAnimations().map((animation:Animation) => animation.finished)).then(() => {
                 // make the movement of the card(s) final.
-                for (let c of cards) {
+                for (const c of cards) {
                     this.piles[pileNr].cards.pop();
                     c.pileNr = tryPileNr;
                     c.moving = false;
@@ -244,9 +248,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 const nextCard = this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1];
                 if (nextCard && !nextCard.turned) {
                     nextCard.turning = true;
-                    const flipCardElement = this.elRef.querySelector('#card-' + nextCard.id + '-turning');
+                    const flipCardElement = this.elRef.querySelector('#card-' + nextCard.id + '-turning')!;
                     flipCardElement.animate([{transform: 'rotateY(180deg) '}], {duration: 300});
-                    Promise.all(flipCardElement.getAnimations().map((animation:any) => animation.finished)).then(() => {
+                    Promise.all(flipCardElement.getAnimations().map((animation:Animation) => animation.finished)).then(() => {
                         nextCard.turned = true;
                         nextCard.turning = false;
                         card.searching = false;
