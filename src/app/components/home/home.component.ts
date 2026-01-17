@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     gamesPlayed: number = 0;
     gamesWon: number = 0;
 
-    @HostListener('window:resize', ['$event'])
+    @HostListener('window:resize')
     _getScreenSize() {
         this.screenHeight = window.innerHeight;
         this.screenWidth = window.innerWidth;
