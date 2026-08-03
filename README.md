@@ -1,6 +1,6 @@
 # Patience
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.11 and upgraded to version 21.2.0.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.11 and upgraded to version 21.2.10.
 
 ## Development server
 
