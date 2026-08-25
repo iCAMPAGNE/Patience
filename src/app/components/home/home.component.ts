@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, HostListener, AfterViewInit, inject} from '@angular/core';
-import { Card, Pile } from '../../models/model';
-import {NgClass} from "@angular/common";
+import {Card, ObjectsBehaviorSubject, Pile} from '../../models/model';
+import {AsyncPipe, NgClass} from "@angular/common";
 
 const GamesPlayedCookie:string = 'GamesPlayedCookie';
 const GamesWonCookie:string = 'GamesWonCookie';
@@ -8,6 +8,7 @@ const GamesWonCookie:string = 'GamesWonCookie';
 @Component({
     selector: 'app-home',
     imports: [
+        AsyncPipe,
         NgClass
     ],
     templateUrl: './home.component.html'
@@ -42,7 +43,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         for (let p = 0; p < 13; p++) {
-            this.piles.push({cards: []});
+            this.piles.push({cards$: new ObjectsBehaviorSubject<Card>([])});
         }
 
         ['clubs', 'diamonds', 'spades', 'hearts'].forEach((type: string) => {
@@ -92,7 +93,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 card.pileNr = pileNr;
                 this.spread.splice(spreadNr, 1);
                 card.turned = x === pileNr - 5;
-                this.piles[pileNr].cards.push(card);
+                this.piles[pileNr].cards$.push(card);
             }
         }
 
@@ -102,7 +103,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             const card = this.cards[this.spread[spreadNr]];
             this.spread.splice(spreadNr, 1);
             card.turned = false;
-            this.piles[5].cards.push(card);
+            this.piles[5].cards$.push(card);
         }
 
         // Read and increase number of played games using cookies.
@@ -122,10 +123,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     turnAround(event: Event, card: Card) {
-        if (this.rechargingPile || this.piles.some(pile => pile.cards.some(card => card.searching))) return;
+        if (this.rechargingPile || this.piles.some(pile => pile.cards$.value.some(card => card.searching))) return;
         card.searching = true;
         card.turning = true;
-        event.stopPropagation(); // Prevent exectution empty stock-pile click
+        event.stopPropagation(); // Prevent execution empty stock-pile click
         const flipCardElement: HTMLElement = this.elRef.querySelector('#card-' + card.id)!;
         const pile4Element: HTMLElement = this.elRef.querySelector('#pile-4')!;
         const pile5Element: HTMLElement = this.elRef.querySelector('#pile-5')!;
@@ -134,8 +135,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
         flipCardElement.animate([{transform: 'rotateY(180deg)'}, {transform: 'translateX(' + moveHorizontal / (this.screenWidth / 100) + 'vw)'}], {duration: 300});
         Promise.all(flipCardElement.getAnimations().map((animation:Animation) => animation.finished)).then(() => {
               card.turned = true;
-              this.piles[5].cards.pop();
-              this.piles[4].cards.push(card);
+            this.piles[5].cards$.pop();
+            this.piles[4].cards$.push(card);
               card.pileNr = 4;
               card.turning = false;
               card.searching = false;
@@ -144,42 +145,42 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     private _turnAround() {
-        const card: Card = this.piles[5].cards[this.piles[5].cards.length - 1];
-        if (this.piles.some(pile => pile.cards.some(card => card.searching))) return;
+        const card: Card = this.piles[5].cards$.lastCard();
+        if (this.piles.some(pile => pile.cards$.value.some(card => card.searching))) return;
         card.searching = true;
         card.turning = true;
-        this.piles[5].cards.pop();
+        this.piles[5].cards$.pop();
         card.pileNr = 4;
         card.turned = true;
-        this.piles[4].cards.push(card);
+        this.piles[4].cards$.push(card);
         card.turning = false;
         card.searching = false;
         this._checkGameStatus();
     }
 
     rechargePile() {
-        if (this.rechargingPile || this.piles.some(pile => pile.cards.some(card => card.searching))) return;
+        if (this.rechargingPile || this.piles.some(pile => pile.cards$.value.some(card => card.searching))) return;
         this.rechargingPile = true;
         this._rechargePile();
     }
 
     private _rechargePile() {
-        if (this.piles[5].cards.find(c => c.turning)) {
+        if (this.piles[5].cards$.value.find(c => c.turning)) {
             this._checkGameStatus();
             this.rechargingPile = false;
             return;
         }
-        if (this.piles[4].cards.length > 0) {
-            const card = this.piles[4].cards[this.piles[4].cards.length - 1];
+        if (this.piles[4].cards$.value.length > 0) {
+            const card = this.piles[4].cards$.lastCard();
             card.turned = false;
             card.turning = true;
             const flipCardElement = this.elementRef.nativeElement.querySelector('#card-' + card.id);
             flipCardElement.animate([{transform: 'rotateY(-180deg)'}, {transform: 'translateX(10vw)'}], {duration: 100});
             Promise.all(flipCardElement.getAnimations().map((animation:Animation) => animation.finished)).then(() => {
                 card.turning = false;
-                this.piles[4].cards.pop();
+                this.piles[4].cards$.pop();
                 card.pileNr = 5;
-                this.piles[5].cards.push(card);
+                this.piles[5].cards$.push(card);
                 this._rechargePile();
             });
         } else {
@@ -190,7 +191,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
 
     cardClick(pileNr: number, card: Card, first4PilesOnly: boolean): boolean {
-        if (this.piles.some(pile => pile.cards.some(card => card.searching))) {
+        if (this.piles.some(pile => pile.cards$.value.some(card => card.searching))) {
             return false;
         }
         if (!card || !card.turned) {
@@ -202,17 +203,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
         for (const tryPileNr of [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12]) {
             if (tryPileNr === pileNr) continue;
             if (first4PilesOnly && tryPileNr > 3) continue;
-            const bottommostCard: Card = this.piles[tryPileNr].cards[this.piles[tryPileNr].cards.length - 1];
+            const bottommostCard: Card = this.piles[tryPileNr].cards$.lastCard();
             if (!((tryPileNr < 4 && ((card.value === 1 && !bottommostCard) ||
-                    (bottommostCard && card.value === bottommostCard.value + 1 && card.type === bottommostCard.type && card.id === this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1].id) ))
+                    (bottommostCard && card.value === bottommostCard.value + 1 && card.type === bottommostCard.type && card.id === this.piles[pileNr].cards$.lastCard().id) ))
                     || (tryPileNr >= 6 && !bottommostCard && card.value === 13)
                     || (tryPileNr >= 6 && (bottommostCard && (card.value === bottommostCard.value - 1) && card.clubOrSpade != bottommostCard.clubOrSpade)))) continue;
 
-            const numberInPile: number = this.piles[pileNr].cards.indexOf(card);
+            const numberInPile: number = this.piles[pileNr].cards$.value.indexOf(card);
             const cards: Card[] = [];
             let numberOfCardsToBeMoved = 0;
-            for (let movingCardId = numberInPile; movingCardId < this.piles[pileNr].cards.length; movingCardId++) {
-                const c: Card = this.piles[pileNr].cards[movingCardId];
+            for (let movingCardId = numberInPile; movingCardId < this.piles[pileNr].cards$.value.length; movingCardId++) {
+                const c: Card = this.piles[pileNr].cards$.value[movingCardId];
                 c.moving = true;
                 cards.push(c);
                 const pileElement = this.elRef.querySelector('#pile-' + tryPileNr)!;
@@ -224,11 +225,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
                     const pileElement = this.elRef.querySelector('#pile-' + tryPileNr)!;
                     moveVertical = pileElement.getBoundingClientRect().top - cardElement.getBoundingClientRect().top;
                 } else {
-                    if (this.piles[tryPileNr].cards.length === 0) {
+                    if (this.piles[tryPileNr].cards$.value.length === 0) {
                         const pileElement = this.elRef.querySelector('#pile-' + tryPileNr)!;
                         moveVertical = pileElement.getBoundingClientRect().top + offsetPerCard * numberOfCardsToBeMoved++ - cardElement.getBoundingClientRect().top;
                     } else {
-                        const bottomCardOfTryPileElement = this.elRef.querySelector('#card-' + this.piles[tryPileNr].cards[this.piles[tryPileNr].cards.length - 1].id)!;
+                        const bottomCardOfTryPileElement = this.elRef.querySelector('#card-' + this.piles[tryPileNr].cards$.lastCard().id)!;
                         moveVertical = bottomCardOfTryPileElement.getBoundingClientRect().top + offsetPerCard + offsetPerCard * numberOfCardsToBeMoved++ - cardElement.getBoundingClientRect().top;
                     }
                 }
@@ -238,14 +239,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
             Promise.all(document.getAnimations().map((animation:Animation) => animation.finished)).then(() => {
                 // make the movement of the card(s) final.
                 for (const c of cards) {
-                    this.piles[pileNr].cards.pop();
+                    this.piles[pileNr].cards$.pop();
                     c.pileNr = tryPileNr;
                     c.moving = false;
-                    this.piles[tryPileNr].cards.push(c);
+                    this.piles[tryPileNr].cards$.push(c);
                 }
 
-                // Turn around next (most lowest) card of that pile.
-                const nextCard = this.piles[pileNr].cards[this.piles[pileNr].cards.length - 1];
+                // Turn around next (lowest) card of that pile.
+                const nextCard = this.piles[pileNr].cards$.lastCard();
                 if (nextCard && !nextCard.turned) {
                     nextCard.turning = true;
                     const flipCardElement = this.elRef.querySelector('#card-' + nextCard.id + '-turning')!;
@@ -254,6 +255,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                         nextCard.turned = true;
                         nextCard.turning = false;
                         card.searching = false;
+                        this.piles[pileNr].cards$.refresh();
                         this._checkGameStatus();
                     });
                 } else {
@@ -269,13 +271,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     private _checkGameStatus() {
         // Has game ended?
-        if (!this.piles.some((pile, index) => index >= 6 && pile.cards.some(card => !card.turned))) {
-            if (this.piles.some((pile, index) => index >= 4 && pile.cards.length > 0)) {
+        if (!this.piles.some((pile, index) => index >= 6 && pile.cards$.value.some(card => !card.turned))) {
+            if (this.piles.some((pile, index) => index >= 4 && pile.cards$.value.length > 0)) {
                 let nextPileNr = 6;
-                while (this.piles[nextPileNr].cards.length === 0 || !this.cardClick(nextPileNr, this.piles[nextPileNr].cards[this.piles[nextPileNr].cards.length - 1], true)) {
+                while (this.piles[nextPileNr].cards$.value.length === 0 || !this.cardClick(nextPileNr, this.piles[nextPileNr].cards$.lastCard(), true)) {
                     nextPileNr = nextPileNr === 12 ? 4 : nextPileNr + 1;
                     if (nextPileNr === 5) {
-                        if (this.piles[5].cards.length === 0) {
+                        if (this.piles[5].cards$.value.length === 0) {
                             this._rechargePile();
                         } else {
                             this._turnAround();

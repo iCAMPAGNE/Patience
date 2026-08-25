@@ -2,7 +2,7 @@
     <div id="piles" class="piles-area stack-area">
         @for (pileNr of [0, 1, 2, 3]; track pileNr) {
             <div id="pile-{{pileNr}}" class="card-area">
-                @for (card of piles[pileNr].cards; track card.id) {
+                @for (card of piles[pileNr].cards$ | async; track card.id) {
                     <img id="card-{{card.id}}" (click)="cardClick(pileNr, card, false)"
                          [src]="card.imageUrl" class="card-format front turned" [ngClass]="{'moving':card.moving}"/>
                 }
@@ -10,7 +10,7 @@
         }
         <div id="pile-99" class="card-area invisible"></div>
         <div id="pile-4" class="card-area">
-            @for (card of piles[4].cards; track card.id) {
+            @for (card of piles[4].cards$ | async; track card.id) {
                 <div class="pile-cards" [ngClass]="{'moving':card.moving || card.turning}">
                     <div id="card-{{card.id}}" class="card-envelope" (click)="cardClick(4, card, false)">
                         <img [src]="card.imageUrl" class="card-format front-pile"
@@ -22,7 +22,7 @@
             }
         </div>
         <div id="pile-5" class="card-area" (click)="rechargePile()">
-            @for (card of piles[5].cards; track card.id) {
+            @for (card of piles[5].cards$ | async; track card.id) {
                 <div class="pile-cards">
                     <div id="card-{{card.id}}" class="card-envelope" (click)="turnAround($event, card)">
                         <img [src]="card.imageUrl" class="card-format front-stock"
@@ -38,7 +38,7 @@
     <div id="play-area" class="piles-area play-area">
         @for (pileNr of [6, 7, 8, 9, 10, 11, 12]; track pileNr) {
             <div id="pile-{{pileNr}}" class="card-area">
-                @for (card of piles[pileNr].cards; track $index) {
+                @for (card of piles[pileNr].cards$ | async; track card.id) {
                     <div>
                         <div id="card-{{card.id}}-turning" [ngClass]="{'turning-animation':!card.moving}"
                              class="back-card-margin" style="--index: {{$index}}">
